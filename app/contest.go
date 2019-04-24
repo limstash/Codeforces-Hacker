@@ -6,6 +6,8 @@ import (
 	"time"
 	"strings"
 	"errors"
+	"net/http"
+	"strconv"
 )
 
 func FindContest(contests []contest.Contest)(int, error){
@@ -32,11 +34,42 @@ func FindContest(contests []contest.Contest)(int, error){
 
 	openHackingPhase := currentTime - contests[lastContestIndex].StartTimeSeconds - contests[lastContestIndex].DurationSeconds
 
-	if openHackingPhase < 12 * 24 * 3600 {
+	if openHackingPhase > 12 * 24 * 3600 {
 		return 0, errors.New("[Info] Open hacking phase finished")
 	}else{
 		fmt.Println("[Info] Open hacking phase running")
 	}
 
 	return contests[lastContestIndex].ID, nil;
+}
+
+func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error){
+	problems, e := contest.GetProblems(ContestID, cookie)
+
+	if e != nil {
+		return 0, e;
+	}
+
+	fmt.Println("")
+	fmt.Println("Please choose the problem you want to hack")
+	fmt.Println("")
+
+	for i := 0; i < len(problems); i++ {
+		fmt.Println("[" + strconv.Itoa(i) + "] " + problems[i].Index + ". " + problems[i].Name)
+	}
+
+	var choose int
+	fmt.Println("")
+
+	fmt.Printf("Your Choose is [0-" + strconv.Itoa(len(problems)-1) + "] : ")
+	_, e = fmt.Scanf("%d", &choose)
+	fmt.Println("")
+
+	for ; e != nil || choose < 0 || choose >= len(problems); {
+		fmt.Printf("Your Choose is [0-" + strconv.Itoa(len(problems)-1) + "] : ")
+		_, e = fmt.Scanf("%d", &choose)
+		fmt.Println("")
+	}
+
+	return choose, nil
 }
