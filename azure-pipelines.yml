@@ -39,11 +39,36 @@ steps:
   displayName: 'Get dependencies'
 
 - script: |
+    make build-linux64
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build for Linux 64'
+
+- script: |
+    make build-linux32
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build for Linux 32'
+
+- script: |
+    make build-windows64
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build for Windows 64'
+
+- script: |
+    make build-windows32
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build for Windows 32'
+
+- script: |
+    make build-osx64
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build for OSX 64'
+
+- script: |
+    make build-osx32
+  workingDirectory: '$(modulePath)'
+  displayName: 'Build for OSX 32'
+
+- script: |
     make test
   workingDirectory: '$(modulePath)'
   displayName: 'Test'
-
-- script: |
-    make build
-  workingDirectory: '$(modulePath)'
-  displayName: 'Build'
