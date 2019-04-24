@@ -8,7 +8,7 @@ import (
 	"errors"
 )
 
-func FindContest(contests []ReadContest.Contest)(error){
+func FindContest(contests []contest.Contest)(int, error){
 	contests_siz := len(contests)
 		
 	var lastContestTime int64 = 100000000
@@ -33,10 +33,10 @@ func FindContest(contests []ReadContest.Contest)(error){
 	openHackingPhase := currentTime - contests[lastContestIndex].StartTimeSeconds - contests[lastContestIndex].DurationSeconds
 
 	if openHackingPhase < 12 * 24 * 3600 {
-		return errors.New("[Info] Open hacking phase finished")
+		return 0, errors.New("[Info] Open hacking phase finished")
 	}else{
 		fmt.Println("[Info] Open hacking phase running")
 	}
 
-	return nil
+	return contests[lastContestIndex].ID, nil;
 }

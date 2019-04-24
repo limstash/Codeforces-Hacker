@@ -1,4 +1,4 @@
-package codeforces
+package con
 
 import (
 	"testing"

@@ -1,4 +1,4 @@
-package ReadContest
+package contest
 	
 import (
 	"testing"
