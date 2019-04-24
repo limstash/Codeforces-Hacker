@@ -8,6 +8,8 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"bufio"
+	"os"
 )
 
 func FindContest(contests []contest.Contest)(int, error){
@@ -44,6 +46,8 @@ func FindContest(contests []contest.Contest)(int, error){
 }
 
 func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error){
+	fmt.Println("[Info] Fetching Problems...")
+
 	problems, e := contest.GetProblems(ContestID, cookie)
 
 	if e != nil {
@@ -55,20 +59,38 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error){
 	fmt.Println("")
 
 	for i := 0; i < len(problems); i++ {
-		fmt.Println("[" + strconv.Itoa(i) + "] " + problems[i].Index + ". " + problems[i].Name)
+		fmt.Println("[" + strconv.Itoa(i+1) + "] " + problems[i].Index + ". " + problems[i].Name)
 	}
 
 	var choose int
-	fmt.Println("")
 
-	fmt.Printf("Your Choose is [0-" + strconv.Itoa(len(problems)-1) + "] : ")
-	_, e = fmt.Scanf("%d", &choose)
 	fmt.Println("")
+	fmt.Printf("Your Choose is [1-" + strconv.Itoa(len(problems)) + "] : ")
 
-	for ; e != nil || choose < 0 || choose >= len(problems); {
-		fmt.Printf("Your Choose is [0-" + strconv.Itoa(len(problems)-1) + "] : ")
-		_, e = fmt.Scanf("%d", &choose)
-		fmt.Println("")
+	myReader := bufio.NewReader(nil)
+	myReader.Reset(os.Stdin)
+	content, e := myReader.ReadString('\n')
+
+	if e != nil {
+		return 0, e
+	}
+
+	fields := strings.Fields(content)
+	choose, e = strconv.Atoi(fields[0])
+
+	for ; e != nil || choose < 1 || choose > len(problems); {
+		fmt.Printf("Your Choose is [1-" + strconv.Itoa(len(problems)) + "] : ")
+
+		myReader = bufio.NewReader(nil)
+		myReader.Reset(os.Stdin)
+		content, e = myReader.ReadString('\n')
+
+		if e != nil {
+			return 0, e
+		}
+		
+		fields = strings.Fields(content)
+		choose, e = strconv.Atoi(fields[0])
 	}
 
 	return choose, nil
