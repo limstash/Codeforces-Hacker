@@ -32,20 +32,20 @@ deps:
 	$(GOGET) github.com/opesun/goquery
 	$(GOGET) github.com/bitly/go-simplejson
 
-build-linux64: setup
+build-linux64:
 	${BUILD_ENV} GOARCH=amd64 GOOS=linux ${GOBUILD} -o build/linux_64/${BINARY_NAME} -v
 
-build-osx64: setup
+build-osx64:
 	${BUILD_ENV} GOARCH=amd64 GOOS=darwin ${GOBUILD} -o build/osx_64/${BINARY_NAME} -v
 
-build-windows64: setup
+build-windows64:
 	${BUILD_ENV} GOARCH=amd64 GOOS=windows ${GOBUILD} -o build/windows_64/${BINARY_NAME}.exe -v
 
-build-linux32: setup
+build-linux32:
 	${BUILD_ENV} GOARCH=386 GOOS=linux ${GOBUILD} -o build/linux_32/${BINARY_NAME} -v
 
-build-osx32: setup
+build-osx32:
 	${BUILD_ENV} GOARCH=386 GOOS=darwin ${GOBUILD} -o build/osx_32/${BINARY_NAME} -v
 
-build-windows32: setup
+build-windows32:
 	${BUILD_ENV} GOARCH=386 GOOS=windows ${GOBUILD} -o build/windows_32/${BINARY_NAME}.exe -v
