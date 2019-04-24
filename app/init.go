@@ -18,6 +18,7 @@ func Load (cookie *[]*http.Cookie) ([]contest.Contest, string, error){
 	}
 
 	fmt.Println("[Info] Fetching CSRF token...")
+	
 	CSRF, err := token.GetCSRF(cookie)
 
 	if err != nil || CSRF == "" {
