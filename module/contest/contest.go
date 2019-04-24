@@ -1,4 +1,4 @@
-package ReadContest
+package contest
 
 import (
     "github.com/hytzongxuan/Codeforces-Hacker/module/http"
@@ -24,7 +24,7 @@ type Contests struct {
 }
 
 func queryContests (cookie *[]*http.Cookie) (string, error) {
-    res, err := codeforces.HttpGet("https://codeforces.com/api/contest.list?gym=false", cookie, map[string]string{"HOST":"codeforces.com"})
+    res, err := con.HttpGet("https://codeforces.com/api/contest.list?gym=false", cookie, map[string]string{"HOST":"codeforces.com"})
 
     if err != nil {
         return "", err

@@ -10,7 +10,7 @@ import (
 
 func GetCSRF(cookie *[]*http.Cookie)(string, error){
 
-	body, e := codeforces.HttpGet("https://codeforces.com/enter?back=%2F", cookie, nil)
+	body, e := con.HttpGet("https://codeforces.com/enter?back=%2F", cookie, nil)
 
 	if e != nil{
 		return "", e

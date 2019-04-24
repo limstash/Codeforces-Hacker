@@ -8,10 +8,10 @@ import(
 	"fmt"
 )
 
-func Load (cookie *[]*http.Cookie) ([]ReadContest.Contest, string, error){
+func Load (cookie *[]*http.Cookie) ([]contest.Contest, string, error){
 	fmt.Println("[Info] Fetching contests info...")
 
-	contests, err := ReadContest.GetContests(cookie)
+	contests, err := contest.GetContests(cookie)
 
 	if err != nil {
 		return nil, "", errors.New("[Error] Unable to fetching contest info")
