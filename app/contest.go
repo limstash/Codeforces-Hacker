@@ -15,8 +15,12 @@ import (
 func FindContest(contests []contest.Contest)(int, error){
 	contests_siz := len(contests)
 		
+	if contests_siz <= 0 {
+		return 0, errors.New("[Info] Contests is an empty field")
+	}
+	
 	var lastContestTime int64 = 100000000
-	lastContestIndex := 0
+	lastContestIndex := -1
 
 	currentTime := time.Now().Unix() 
 
@@ -32,11 +36,15 @@ func FindContest(contests []contest.Contest)(int, error){
 		}
 	}
 
+	if lastContestIndex == -1 {
+		return 0, errors.New("[Info] No vaild contest")
+	}
+
 	fmt.Println("[Info] The current contest is "+contests[lastContestIndex].Name)
 
 	openHackingPhase := currentTime - contests[lastContestIndex].StartTimeSeconds - contests[lastContestIndex].DurationSeconds
 
-	if openHackingPhase < 12 * 24 * 3600 {
+	if openHackingPhase > 12 * 3600 {
 		return 0, errors.New("[Info] Open hacking phase finished")
 	}else{
 		fmt.Println("[Info] Open hacking phase running")
