@@ -30,6 +30,7 @@ run:
 	./$(BINARY_NAME)
 deps:
 	$(GOGET) github.com/opesun/goquery
+	$(GOGET) github.com/bitly/go-simplejson
 
 build-linux64: setup
 	${BUILD_ENV} GOARCH=amd64 GOOS=linux ${GOBUILD} -o build/linux_64/${BINARY_NAME} -v
