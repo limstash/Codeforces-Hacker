@@ -17,16 +17,23 @@ func Test_QueryCode(t *testing.T){
 	}
 	
 	res, e := QueryCode(53127485, &GlobalCookie, CSRF)
+	status := true
 
 	if e != nil {
+		if res != "" {
+			t.Error("Module code return not null with error")
+		}
 		t.Error(e)
+		status = false
 	}else if res == "" {
 		t.Error("No Response from codeforces.com")
+		status = false
 	}else if(GlobalCookie == nil || len(GlobalCookie) == 0){
 		t.Error("Cookie is an empty field")
+		status = false
 	}
 
-	if e != nil || res == "" {
+	if status == false {
 		t.Log("Query Code Test Failed")
 	}else{
 		t.Log("Query Code Test Passed")
