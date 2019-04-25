@@ -1,14 +1,16 @@
 package app
 
-import(
-	"github.com/hytzongxuan/Codeforces-Hacker/module/contest"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
-	"net/http"
+import (
 	"errors"
 	"fmt"
+	"net/http"
+
+	"github.com/hytzongxuan/Codeforces-Hacker/module/contest"
+	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
 )
 
-func Load (cookie *[]*http.Cookie) ([]contest.Contest, string, error){
+// Load will fetch contests info and CSRF token from https://codeforces.com
+func Load(cookie *[]*http.Cookie) ([]contest.Contest, string, error) {
 	fmt.Println("[Info] Fetching contests info...")
 
 	contests, err := contest.GetContests(cookie)
@@ -18,7 +20,7 @@ func Load (cookie *[]*http.Cookie) ([]contest.Contest, string, error){
 	}
 
 	fmt.Println("[Info] Fetching CSRF token...")
-	
+
 	CSRF, err := token.GetCSRF(cookie)
 
 	if err != nil || CSRF == "" {
