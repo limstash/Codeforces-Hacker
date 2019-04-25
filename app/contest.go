@@ -1,31 +1,33 @@
 package app
 
 import (
-	"github.com/hytzongxuan/Codeforces-Hacker/module/contest"
-	"fmt"
-	"time"
-	"strings"
-	"errors"
-	"net/http"
-	"strconv"
 	"bufio"
+	"errors"
+	"fmt"
+	"net/http"
 	"os"
+	"strconv"
+	"strings"
+	"time"
+
+	"github.com/hytzongxuan/Codeforces-Hacker/module/contest"
 )
 
-func FindContest(contests []contest.Contest)(int, error){
-	contests_siz := len(contests)
-		
-	if contests_siz <= 0 {
+// FindContest will find the latest contest in the contests array
+func FindContest(contests []contest.Contest) (int, error) {
+	contestsSiz := len(contests)
+
+	if contestsSiz <= 0 {
 		return 0, errors.New("[Info] Contests is an empty field")
 	}
-	
+
 	var lastContestTime int64 = 100000000
 	lastContestIndex := -1
 
-	currentTime := time.Now().Unix() 
+	currentTime := time.Now().Unix()
 
-	for i := 0; i < contests_siz; i++{
-		if strings.Contains(contests[i].Name, "Educational") || strings.Contains(contests[i].Name, "Div. 3"){
+	for i := 0; i < contestsSiz; i++ {
+		if strings.Contains(contests[i].Name, "Educational") || strings.Contains(contests[i].Name, "Div. 3") {
 			timeDelta := currentTime - contests[i].StartTimeSeconds
 
 			if timeDelta > 0 && timeDelta < lastContestTime {
@@ -40,26 +42,27 @@ func FindContest(contests []contest.Contest)(int, error){
 		return 0, errors.New("[Info] No vaild contest")
 	}
 
-	fmt.Println("[Info] The current contest is "+contests[lastContestIndex].Name)
+	fmt.Println("[Info] The current contest is " + contests[lastContestIndex].Name)
 
 	openHackingPhase := currentTime - contests[lastContestIndex].StartTimeSeconds - contests[lastContestIndex].DurationSeconds
 
-	if openHackingPhase > 12 * 3600 {
+	if openHackingPhase > 12*3600 {
 		return 0, errors.New("[Info] Open hacking phase finished")
-	}else{
-		fmt.Println("[Info] Open hacking phase running")
 	}
 
-	return contests[lastContestIndex].ID, nil;
+	fmt.Println("[Info] Open hacking phase running")
+
+	return contests[lastContestIndex].ID, nil
 }
 
-func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error){
+// ChooseProblem will fetch the problem in the contest and read user's input from stdin
+func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error) {
 	fmt.Println("[Info] Fetching Problems...")
 
 	problems, e := contest.GetProblems(ContestID, cookie)
 
 	if e != nil {
-		return 0, e;
+		return 0, e
 	}
 
 	fmt.Println("")
@@ -86,7 +89,7 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error){
 	fields := strings.Fields(content)
 	choose, e = strconv.Atoi(fields[0])
 
-	for ; e != nil || choose < 1 || choose > len(problems); {
+	for e != nil || choose < 1 || choose > len(problems) {
 		fmt.Printf("Your Choose is [1-" + strconv.Itoa(len(problems)) + "] : ")
 
 		myReader = bufio.NewReader(nil)
@@ -96,7 +99,7 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error){
 		if e != nil {
 			return 0, e
 		}
-		
+
 		fields = strings.Fields(content)
 		choose, e = strconv.Atoi(fields[0])
 	}
