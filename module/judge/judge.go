@@ -72,11 +72,11 @@ func Judge(SubmissionID int, Language string, customDiff bool) (bool, error) {
 		if AvailableLanguage.Go != true {
 			return false, errors.New("Not Support")
 		}
-	case "Python2":
+	case "Python 2":
 		if AvailableLanguage.Python2 != true {
 			return false, errors.New("Not Support")
 		}
-	case "Python3":
+	case "Python 3":
 		if AvailableLanguage.Python3 != true {
 			return false, errors.New("Not Support")
 		}
