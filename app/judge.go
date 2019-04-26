@@ -6,21 +6,30 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"path/filepath"
 	"strconv"
 
 	"github.com/hytzongxuan/Codeforces-Hacker/module/code"
 	"github.com/hytzongxuan/Codeforces-Hacker/module/judge"
 )
 
-func runCode(SubmissionID int, Language string, customDiff bool) bool {
+func getPath() string {
+	file, _ := exec.LookPath(os.Args[0])
+	path, _ := filepath.Abs(file)
+	rst := filepath.Dir(path)
+	return rst
+}
+
+func runCode(SubmissionID int, Language string, customDiff bool) (bool, error) {
 	_, e := judge.Judge(SubmissionID, Language, customDiff)
 
 	if e == nil {
-		return true
+		return true, nil
 	}
 
 	if e.Error() == "Not Suppose" {
-		return true
+		return true, nil
 	}
 
 	if e.Error() == "Compile Error" {
@@ -32,10 +41,10 @@ func runCode(SubmissionID int, Language string, customDiff bool) bool {
 	}
 
 	if e.Error() == "Wrong Answer" {
-		fmt.Println("[Info] Code " + strconv.Itoa(SubmissionID) + " Runtime Error")
+		fmt.Println("[Info] Code " + strconv.Itoa(SubmissionID) + " Wrong Answer")
 	}
 
-	return false
+	return false, e
 }
 
 func copyfile(origin string, remote string) {
@@ -64,9 +73,9 @@ func saveCode(SubmissionID int, Language string, Cookie *[]*http.Cookie, CSRF st
 		return e
 	}
 
-	os.MkdirAll("src/"+strconv.Itoa(SubmissionID), 0777)
-	copyfile("src/data.in", "src/"+strconv.Itoa(SubmissionID)+"/data.in")
-	copyfile("src/data.ans", "src/"+strconv.Itoa(SubmissionID)+"/data.ans")
+	os.MkdirAll(getPath()+"/src/"+strconv.Itoa(SubmissionID), 0777)
+	copyfile(getPath()+"/src/data.in", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/data.in")
+	copyfile(getPath()+"/src/data.ans", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/data.ans")
 
 	e = code.SaveCode(SubmissionID, Language, text)
 
@@ -77,7 +86,12 @@ func saveCode(SubmissionID int, Language string, Cookie *[]*http.Cookie, CSRF st
 	return nil
 }
 
-func TestCode(SubmissionID int, Language string, customDiff bool, Cookie *[]*http.Cookie, CSRF string) bool {
-	saveCode(SubmissionID, Language, Cookie, CSRF)
+func TestCode(SubmissionID int, Language string, customDiff bool, Cookie *[]*http.Cookie, CSRF string) (bool, error) {
+	e := saveCode(SubmissionID, Language, Cookie, CSRF)
+
+	if e != nil {
+		return false, e
+	}
+
 	return runCode(SubmissionID, Language, customDiff)
 }
