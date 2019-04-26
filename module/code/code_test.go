@@ -16,7 +16,7 @@ func Test_QueryCode(t *testing.T) {
 		t.Skip("Fetched CSRF Failed, Skipped")
 	}
 
-	res, e := queryCode(53127485, &GlobalCookie, CSRF)
+	res, e := QueryCode(53127485, &GlobalCookie, CSRF)
 	status := true
 
 	if e != nil {
