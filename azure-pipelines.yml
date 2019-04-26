@@ -34,6 +34,9 @@ steps:
         curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
         dep ensure
     fi
+
+    sudo apt-get install gcc g++ python2.7 python3
+    
   workingDirectory: '$(modulePath)'
   displayName: 'Get dependencies'
 
