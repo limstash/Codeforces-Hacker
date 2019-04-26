@@ -3,7 +3,6 @@ package judge
 import (
 	"bufio"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
@@ -21,9 +20,11 @@ func RunUnixBin(SubmissionID int, SubmissionPath string) bool {
 	defer stdin.Close()
 
 	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
+
 	if err != nil {
-		log.Fatalln(err)
+		return false
 	}
+
 	defer stdout.Close()
 
 	subProcess.Stdout = stdout
@@ -68,9 +69,11 @@ func RunPython2(SubmissionID int, SubmissionPath string) bool {
 	defer stdin.Close()
 
 	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
+
 	if err != nil {
-		log.Fatalln(err)
+		return false
 	}
+
 	defer stdout.Close()
 
 	subProcess.Stdout = stdout
@@ -114,9 +117,11 @@ func RunPython3(SubmissionID int, SubmissionPath string) bool {
 	defer stdin.Close()
 
 	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
+
 	if err != nil {
-		log.Fatalln(err)
+		return false
 	}
+
 	defer stdout.Close()
 
 	subProcess.Stdout = stdout
