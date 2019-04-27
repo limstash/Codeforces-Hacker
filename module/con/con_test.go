@@ -71,9 +71,9 @@ func Test_httpPOST(t *testing.T) {
 	}
 
 	if status == false {
-		t.Log("HTTP GET Query Test Failed")
+		t.Log("HTTP POST Query Test Failed")
 	} else {
-		t.Log("HTTP GET Query Test Passed")
+		t.Log("HTTP POST Query Test Passed")
 	}
 }
 
@@ -95,8 +95,8 @@ func Test_httpsPOST(t *testing.T) {
 	}
 
 	if status == false {
-		t.Log("HTTPS GET Query Test Failed")
+		t.Log("HTTPS POST Query Test Failed")
 	} else {
-		t.Log("HTTPS GET Query Test Passed")
+		t.Log("HTTPS POST Query Test Passed")
 	}
 }
