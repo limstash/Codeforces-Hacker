@@ -28,7 +28,7 @@ func runCode(SubmissionID int, Language string, customDiff bool) (bool, error) {
 		return true, nil
 	}
 
-	if e.Error() == "Not Suppose" {
+	if e.Error() == "Not Support" {
 		return true, nil
 	}
 
