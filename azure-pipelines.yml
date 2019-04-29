@@ -30,11 +30,11 @@ jobs:
   - script: |
       go version
       go get -v -t -d ./...
-    workingDirectory: '$(Build.SourcesDirectory)'
+    workingDirectory: '$(modulePath)'
     displayName: 'Get dependencies'
   - script: |
-      make test
-    workingDirectory: '$(Build.SourcesDirectory)'
+      go test ./... -v
+    workingDirectory: '$(modulePath)'
     displayName: 'Test'
 
 - job: macos
@@ -52,7 +52,6 @@ jobs:
       mkdir -p '$(GOPATH)/pkg'
       mkdir -p '$(modulePath)'
       shopt -s extglob
-      shopt -s dotglob
       mv !(gopath) '$(modulePath)'
       echo '##vso[task.prependpath]$(GOBIN)'
       echo '##vso[task.prependpath]$(GOROOT)/bin'
