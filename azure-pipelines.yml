@@ -7,17 +7,17 @@ trigger:
 - master
 
 jobs:
-- template: azure-pipelines.template.yml
+- template: azure-pipelines.test.yml
   parameters:
     name: linux
     vmImage: 'ubuntu-16.04'
 
-- template: azure-pipelines.template.yml
+- template: azure-pipelines.test.yml
   parameters:
     name: windows
     vmImage: 'vs2017-win2016'
 
-- template: azure-pipelines.template.yml
+- template: azure-pipelines.test.yml
   parameters:
     name: macos
     vmImage: 'macOS-10.13'
