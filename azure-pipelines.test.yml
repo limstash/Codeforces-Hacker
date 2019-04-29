@@ -1,0 +1,18 @@
+jobs:
+- job: ${{ parameters.name }}
+  timeoutInMinutes: 30
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  steps:
+  - script: |
+      go version
+      go get -v -t -d ./...
+    workingDirectory: '$(modulePath)'
+    displayName: 'Get dependencies'
+
+  - script: |
+      go test ./... -v
+    workingDirectory: '$(modulePath)'
+    displayName: 'Test'

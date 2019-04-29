@@ -6,76 +6,97 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'Ubuntu-16.04'
+jobs:
+- template: azure-pipelines.template.yml
+  parameters:
+    name: linux
+    vmImage: 'ubuntu-16.04'
 
-variables:
-  GOBIN:  '$(GOPATH)/bin' # Go binaries path
-  GOROOT: '/usr/local/go1.11' # Go installation path
-  GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-  modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+- template: azure-pipelines.template.yml
+  parameters:
+    name: windows
+    vmImage: 'vs2017-win2016'
 
-steps:
-- script: |
-    mkdir -p '$(GOBIN)'
-    mkdir -p '$(GOPATH)/pkg'
-    mkdir -p '$(modulePath)'
-    shopt -s extglob
-    shopt -s dotglob
-    mv !(gopath) '$(modulePath)'
-    echo '##vso[task.prependpath]$(GOBIN)'
-    echo '##vso[task.prependpath]$(GOROOT)/bin'
-  displayName: 'Set up the Go workspace'
+- template: azure-pipelines.template.yml
+  parameters:
+    name: macos
+    vmImage: 'macOS-10.13'
 
-- script: |
-    go version
-    go get -v -t -d ./...
-    if [ -f Gopkg.toml ]; then
-        curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-        dep ensure
-    fi
+- job: build
+  dependsOn: linux
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  timeoutInMinutes: 60
 
-    sudo apt-get install gcc g++ python2.7 python3
-    
-  workingDirectory: '$(modulePath)'
-  displayName: 'Get dependencies'
+  pool:
+    vmImage: 'Ubuntu-16.04'
 
-- script: |
-    make build-linux64
-  workingDirectory: '$(modulePath)'
-  displayName: 'Build for Linux 64'
+  variables:
+    GOBIN:  '$(GOPATH)/bin' # Go binaries path
+    GOROOT: '/usr/local/go1.11' # Go installation path
+    GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+    modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
 
-- script: |
-    make build-linux32
-  workingDirectory: '$(modulePath)'
-  displayName: 'Build for Linux 32'
+  steps:
+  - script: |
+      mkdir -p '$(GOBIN)'
+      mkdir -p '$(GOPATH)/pkg'
+      mkdir -p '$(modulePath)'
+      shopt -s extglob
+      shopt -s dotglob
+      mv !(gopath) '$(modulePath)'
+      echo '##vso[task.prependpath]$(GOBIN)'
+      echo '##vso[task.prependpath]$(GOROOT)/bin'
+    displayName: 'Set up the Go workspace'
 
-- script: |
-    make build-windows64
-  workingDirectory: '$(modulePath)'
-  displayName: 'Build for Windows 64'
+  - script: |
+      go version
+      go get -v -t -d ./...
+      if [ -f Gopkg.toml ]; then
+          curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+          dep ensure
+      fi
 
-- script: |
-    make build-windows32
-  workingDirectory: '$(modulePath)'
-  displayName: 'Build for Windows 32'
+      sudo apt-get install gcc g++ python2.7 python3
+      
+    workingDirectory: '$(modulePath)'
+    displayName: 'Get dependencies'
 
-- script: |
-    make build-osx64
-  workingDirectory: '$(modulePath)'
-  displayName: 'Build for OSX 64'
+  - script: |
+      make build-linux64
+    workingDirectory: '$(modulePath)'
+    displayName: 'Build for Linux 64'
 
-- script: |
-    make build-osx32
-  workingDirectory: '$(modulePath)'
-  displayName: 'Build for OSX 32'
+  - script: |
+      make build-linux32
+    workingDirectory: '$(modulePath)'
+    displayName: 'Build for Linux 32'
 
-- script: |
-    make test
-  workingDirectory: '$(modulePath)'
-  displayName: 'Test'
+  - script: |
+      make build-windows64
+    workingDirectory: '$(modulePath)'
+    displayName: 'Build for Windows 64'
 
-- script: |
-    bash <(curl -s https://codecov.io/bash) -t 3d625ec9-4ce0-40a8-97c4-af45c5930521
-  workingDirectory: '$(modulePath)'
-  displayName: 'Upload Codecov'
+  - script: |
+      make build-windows32
+    workingDirectory: '$(modulePath)'
+    displayName: 'Build for Windows 32'
+
+  - script: |
+      make build-osx64
+    workingDirectory: '$(modulePath)'
+    displayName: 'Build for OSX 64'
+
+  - script: |
+      make build-osx32
+    workingDirectory: '$(modulePath)'
+    displayName: 'Build for OSX 32'
+
+  - script: |
+      make test
+    workingDirectory: '$(modulePath)'
+    displayName: 'Test'
+
+  - script: |
+      bash <(curl -s https://codecov.io/bash) -t 3d625ec9-4ce0-40a8-97c4-af45c5930521
+    workingDirectory: '$(modulePath)'
+    displayName: 'Upload Codecov'
