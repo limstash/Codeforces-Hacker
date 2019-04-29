@@ -11,11 +11,18 @@ jobs:
   timeoutInMinutes: 30
   pool:
     vmImage: 'ubuntu-16.04'
+  variables:
+    GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+    modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
   steps:
+  - script: |
+      mkdir -p '$(GOPATH)/pkg'
+      mkdir -p '$(modulePath)'
+      mv !(gopath) '$(modulePath)'
+    displayName: 'Set up the Go workspace'
   - script: |
       go version
       go get -v -t -d ./...
-      
     workingDirectory: '$(Build.SourcesDirectory)'
     displayName: 'Get dependencies'
   - script: |
@@ -27,6 +34,15 @@ jobs:
   timeoutInMinutes: 30
   pool:
     vmImage: 'vs2017-win2016'
+  variables:
+    GOPATH: '$(system.defaultWorkingDirectory)\\gopath' # Go workspace path
+    modulePath: '$(GOPATH)\\src\github.com\\$(build.repository.name)' # Path to the module's code
+  steps:
+  - script: |
+      md '$(GOPATH)/pkg'
+      md '$(modulePath)'
+      move !(gopath) '$(modulePath)'
+    displayName: 'Set up the Go workspace'
   steps:
   - script: |
       go version
@@ -43,11 +59,18 @@ jobs:
   timeoutInMinutes: 30
   pool:
     vmImage: 'macOS-10.13'
+  variables:
+    GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+    modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
   steps:
+  - script: |
+      mkdir -p '$(GOPATH)/pkg'
+      mkdir -p '$(modulePath)'
+      mv !(gopath) '$(modulePath)'
+    displayName: 'Set up the Go workspace'
   - script: |
       go version
       go get -v -t -d ./...
-      
     workingDirectory: '$(Build.SourcesDirectory)'
     displayName: 'Get dependencies'
   - script: |
