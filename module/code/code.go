@@ -10,11 +10,11 @@ import (
 	"strconv"
 
 	"github.com/bitly/go-simplejson"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/con"
+	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
 )
 
 func QueryCode(SubmissionID int, cookie *[]*http.Cookie, CSRF string) (string, error) {
-	res, err := con.HTTPPostByte("https://codeforces.com/data/submitSource", cookie, map[string]string{"X-Csrf-Token": CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}, map[string]string{"submissionId": strconv.Itoa(SubmissionID), "csrf_token": CSRF})
+	res, err := conn.HTTPPostByte("https://codeforces.com/data/submitSource", cookie, map[string]string{"X-Csrf-Token": CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}, map[string]string{"submissionId": strconv.Itoa(SubmissionID), "csrf_token": CSRF})
 
 	if err != nil {
 		return "", err
