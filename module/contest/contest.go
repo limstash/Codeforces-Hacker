@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/bitly/go-simplejson"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/con"
+	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
 )
 
 //Contest type contains contest info
@@ -35,7 +35,7 @@ type Problem struct {
 }
 
 func queryContests(cookie *[]*http.Cookie) (string, error) {
-	res, err := con.HTTPGet("https://codeforces.com/api/contest.list?gym=false", cookie, map[string]string{"HOST": "codeforces.com"})
+	res, err := conn.HTTPGet("https://codeforces.com/api/contest.list?gym=false", cookie, map[string]string{"HOST": "codeforces.com"})
 
 	if err != nil {
 		return "", err
@@ -67,7 +67,7 @@ func GetContests(cookie *[]*http.Cookie) ([]Contest, error) {
 }
 
 func queryProblems(contestID int, cookie *[]*http.Cookie) ([]byte, error) {
-	res, err := con.HTTPGetByte("https://codeforces.com/api/contest.standings?contestId="+strconv.Itoa(contestID)+"&from=1&count=1", cookie, map[string]string{"HOST": "codeforces.com"})
+	res, err := conn.HTTPGetByte("https://codeforces.com/api/contest.standings?contestId="+strconv.Itoa(contestID)+"&from=1&count=1", cookie, map[string]string{"HOST": "codeforces.com"})
 
 	if err != nil {
 		return nil, err
