@@ -7,24 +7,50 @@ trigger:
 - master
 
 jobs:
-- template: azure-pipelines.template.yml
-  parameters:
-    name: linux
-    vmImage: 'ubuntu-16.04'
+- job: test on linux
+  timeoutInMinutes: 30
 
-- template: azure-pipelines.template.yml
-  parameters:
-    name: windows
-    vmImage: 'vs2017-win2016'
+  pool:
+    vmImage: 'Ubuntu-16.04'
 
-- template: azure-pipelines.template.yml
-  parameters:
-    name: macos
-    vmImage: 'macOS-10.13'
+  variables:
+    GOBIN:  '$(GOPATH)/bin' # Go binaries path
+    GOROOT: '/usr/local/go1.11' # Go installation path
+    GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
+    modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+
+  steps:
+  - script: |
+      mkdir -p '$(GOBIN)'
+      mkdir -p '$(GOPATH)/pkg'
+      mkdir -p '$(modulePath)'
+      shopt -s extglob
+      shopt -s dotglob
+      mv !(gopath) '$(modulePath)'
+      echo '##vso[task.prependpath]$(GOBIN)'
+      echo '##vso[task.prependpath]$(GOROOT)/bin'
+    displayName: 'Set up the Go workspace'
+
+  - script: |
+      go version
+      go get -v -t -d ./...
+      if [ -f Gopkg.toml ]; then
+          curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+          dep ensure
+      fi
+
+      sudo apt-get install gcc g++ python2.7 python3
+      
+    workingDirectory: '$(modulePath)'
+    displayName: 'Get dependencies'
+
+  - script: |
+      make test
+    workingDirectory: '$(modulePath)'
+    displayName: 'Test'
 
 - job: build
-  dependsOn: linux
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn: test on linux
   timeoutInMinutes: 60
 
   pool:
