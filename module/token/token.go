@@ -5,14 +5,14 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/hytzongxuan/Codeforces-Hacker/module/con"
+	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
 	"github.com/opesun/goquery"
 )
 
 // GetCSRF will fetch CSRF token from codeforces's login page
 func GetCSRF(cookie *[]*http.Cookie) (string, error) {
 
-	body, e := con.HTTPGet("https://codeforces.com/enter?back=%2F", cookie, nil)
+	body, e := conn.HTTPGet("https://codeforces.com/enter?back=%2F", cookie, nil)
 
 	if e != nil {
 		return "", e
