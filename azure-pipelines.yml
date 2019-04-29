@@ -43,7 +43,6 @@ jobs:
       md '$(modulePath)'
       move !(gopath) '$(modulePath)'
     displayName: 'Set up the Go workspace'
-  steps:
   - script: |
       go version
       go get -v -t -d ./...
