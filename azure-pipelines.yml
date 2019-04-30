@@ -37,36 +37,6 @@ jobs:
     workingDirectory: '$(modulePath)'
     displayName: 'Test'
 
-- job: macos
-  timeoutInMinutes: 30
-  pool:
-    vmImage: 'macOS-10.13'
-  variables:
-    GOBIN:  '$(GOPATH)/bin' # Go binaries path
-    GOROOT: '/usr/local/go1.11' # Go installation path
-    GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
-    modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
-  steps:
-  - script: |
-      whereis go
-      mkdir -p '$(GOBIN)'
-      mkdir -p '$(GOPATH)/pkg'
-      mkdir -p '$(modulePath)'
-      shopt -s extglob
-      mv !(gopath) '$(modulePath)'
-      echo '##vso[task.prependpath]$(GOBIN)'
-      echo '##vso[task.prependpath]$(GOROOT)/bin'
-    displayName: 'Set up the Go workspace'
-  - script: |
-      go version
-      go get -v -t -d ./...
-    workingDirectory: '$(modulePath)'
-    displayName: 'Get dependencies'
-  - script: |
-      go test ./... -v
-    workingDirectory: '$(modulePath)'
-    displayName: 'Test'
-
 - job: build
   dependsOn: linux
   timeoutInMinutes: 60
