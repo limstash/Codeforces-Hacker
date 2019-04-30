@@ -6,20 +6,11 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"os/exec"
-	"path/filepath"
 	"strconv"
 
 	"github.com/hytzongxuan/Codeforces-Hacker/module/code"
 	"github.com/hytzongxuan/Codeforces-Hacker/module/judge"
 )
-
-func getPath() string {
-	file, _ := exec.LookPath(os.Args[0])
-	path, _ := filepath.Abs(file)
-	rst := filepath.Dir(path)
-	return rst
-}
 
 func runCode(SubmissionID int, Language string, customDiff bool) (bool, error) {
 	_, e := judge.Judge(SubmissionID, Language, customDiff)
