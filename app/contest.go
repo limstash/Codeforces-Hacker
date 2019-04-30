@@ -87,7 +87,12 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error) {
 	}
 
 	fields := strings.Fields(content)
-	choose, e = strconv.Atoi(fields[0])
+
+	if fields == nil || len(fields) == 0 {
+		choose = 0
+	} else {
+		choose, e = strconv.Atoi(fields[0])
+	}
 
 	for e != nil || choose < 1 || choose > len(problems) {
 		fmt.Printf("Your Choose is [1-" + strconv.Itoa(len(problems)) + "] : ")
@@ -101,6 +106,12 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error) {
 		}
 
 		fields = strings.Fields(content)
+
+		if fields == nil || len(fields) == 0 {
+			choose = 0
+			continue
+		}
+
 		choose, e = strconv.Atoi(fields[0])
 	}
 
