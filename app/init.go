@@ -4,10 +4,20 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
 
 	"github.com/hytzongxuan/Codeforces-Hacker/module/contest"
 	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
 )
+
+func getPath() string {
+	file, _ := exec.LookPath(os.Args[0])
+	path, _ := filepath.Abs(file)
+	rst := filepath.Dir(path)
+	return rst
+}
 
 // Load will fetch contests info and CSRF token from https://codeforces.com
 func Load(cookie *[]*http.Cookie) ([]contest.Contest, string, error) {
