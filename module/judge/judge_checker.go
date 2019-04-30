@@ -2,7 +2,6 @@ package judge
 
 import (
 	"bufio"
-	"fmt"
 	"io"
 	"os"
 	"strconv"
@@ -51,7 +50,6 @@ func Diff(SubmissionID int) bool {
 			output = string(a)
 
 			if end2 == true && output != "" && output != "\r" && output != "\n" && output != "\r\n" {
-				fmt.Println("yes1")
 				status = false
 			}
 		}
