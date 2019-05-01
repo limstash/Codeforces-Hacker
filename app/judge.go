@@ -24,7 +24,7 @@ func runCode(SubmissionID int, Language string, customDiff bool) (bool, error) {
 	}
 
 	if e.Error() == "Compile Error" {
-		fmt.Println("[Warning] Code " + strconv.Itoa(SubmissionID) + " Compile Failed")
+		fmt.Println("[Info] Code " + strconv.Itoa(SubmissionID) + " Compile Failed")
 	}
 
 	if e.Error() == "Runtime Error" {
