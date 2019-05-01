@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/hytzongxuan/Codeforces-Hacker/app"
@@ -17,6 +19,7 @@ var Cookie []*http.Cookie
 
 func finish() {
 	time.Sleep(time.Millisecond * 5000)
+	os.Exit(0)
 }
 
 func main() {
@@ -29,14 +32,14 @@ func main() {
 		finish()
 	}
 
-	contestID, e := app.FindContest(Contest)
+	contestInfo, e := app.FindContest(Contest)
 
 	if e != nil {
 		fmt.Println(e)
 		finish()
 	}
 
-	id, e := app.ChooseProblem(contestID, &Cookie)
+	choose, e := app.ChooseProblem(contestInfo.ID, &Cookie)
 
 	if e != nil {
 		fmt.Println(e)
@@ -50,8 +53,10 @@ func main() {
 		finish()
 	}
 
+	var hackChoose bool
+
 	if loginChoose == true {
-		hackChoose, e := app.QueryHackChoose()
+		hackChoose, e = app.QueryHackChoose()
 
 		if e != nil {
 			fmt.Println(e)
@@ -59,10 +64,32 @@ func main() {
 		}
 
 		app.Login(&Cookie, CSRF)
-		fmt.Println(hackChoose)
 	}
 
 	app.SaveData()
-	fmt.Println(id)
 
+	fmt.Println("[Info] Fetching submissions...")
+	submit := app.GetSubmission(&Cookie, contestInfo, choose)
+
+	fmt.Println(" ")
+
+	if hackChoose == true {
+		fmt.Println("[Info] Not Support auto hack")
+	}
+
+	for i := 0; i < len(submit); i++ {
+		flag, _ := app.TestCode(submit[i].SubmissionID, submit[i].Language, false, &Cookie, CSRF)
+
+		if flag == true {
+			fmt.Println("[Info] Submission " + strconv.Itoa(submit[i].SubmissionID) + " Accepted")
+		}
+
+		if e != nil {
+			if hackChoose == true {
+
+			} else {
+
+			}
+		}
+	}
 }

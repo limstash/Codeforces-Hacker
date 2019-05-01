@@ -14,11 +14,11 @@ import (
 )
 
 // FindContest will find the latest contest in the contests array
-func FindContest(contests []contest.Contest) (int, error) {
+func FindContest(contests []contest.Contest) (contest.Contest, error) {
 	contestsSiz := len(contests)
 
 	if contestsSiz <= 0 {
-		return 0, errors.New("[Info] Contests is an empty field")
+		return contest.Contest{}, errors.New("[Info] Contests is an empty field")
 	}
 
 	var lastContestTime int64 = 100000000
@@ -39,30 +39,30 @@ func FindContest(contests []contest.Contest) (int, error) {
 	}
 
 	if lastContestIndex == -1 {
-		return 0, errors.New("[Info] No vaild contest")
+		return contest.Contest{}, errors.New("[Info] No vaild contest")
 	}
 
 	fmt.Println("[Info] The current contest is " + contests[lastContestIndex].Name)
 
 	openHackingPhase := currentTime - contests[lastContestIndex].StartTimeSeconds - contests[lastContestIndex].DurationSeconds
 
-	if openHackingPhase > 12*3600 {
-		return 0, errors.New("[Info] Open hacking phase finished")
+	if openHackingPhase < 12*3600 {
+		return contest.Contest{}, errors.New("[Info] Open hacking phase finished")
 	}
 
 	fmt.Println("[Info] Open hacking phase running")
 
-	return contests[lastContestIndex].ID, nil
+	return contests[lastContestIndex], nil
 }
 
 // ChooseProblem will fetch the problem in the contest and read user's input from stdin
-func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error) {
+func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (string, error) {
 	fmt.Println("[Info] Fetching Problems...")
 
 	problems, e := contest.GetProblems(ContestID, cookie)
 
 	if e != nil {
-		return 0, e
+		return "", e
 	}
 
 	fmt.Println("")
@@ -83,7 +83,7 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error) {
 	content, e := myReader.ReadString('\n')
 
 	if e != nil {
-		return 0, e
+		return "", e
 	}
 
 	fields := strings.Fields(content)
@@ -102,7 +102,7 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error) {
 		content, e = myReader.ReadString('\n')
 
 		if e != nil {
-			return 0, e
+			return "", e
 		}
 
 		fields = strings.Fields(content)
@@ -115,5 +115,5 @@ func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (int, error) {
 		choose, e = strconv.Atoi(fields[0])
 	}
 
-	return choose, nil
+	return problems[choose-1].Index, nil
 }

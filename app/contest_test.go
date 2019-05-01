@@ -32,11 +32,11 @@ func Test_FindContest(t *testing.T) {
 	res = contest.Contests{}
 	e = json.Unmarshal([]byte(data2Contest), &res)
 
-	id, e := FindContest(res.Result)
+	resp, e := FindContest(res.Result)
 
 	if e != nil {
 		t.Error(e)
-	} else if id != 1148 {
+	} else if resp.ID != 1148 {
 		t.Error("App Contest failed in finding contest")
 	}
 
