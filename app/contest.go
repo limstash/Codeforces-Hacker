@@ -46,7 +46,7 @@ func FindContest(contests []contest.Contest) (contest.Contest, error) {
 
 	openHackingPhase := currentTime - contests[lastContestIndex].StartTimeSeconds - contests[lastContestIndex].DurationSeconds
 
-	if openHackingPhase < 12*3600 {
+	if openHackingPhase > 12*3600 {
 		return contest.Contest{}, errors.New("[Info] Open hacking phase finished")
 	}
 
