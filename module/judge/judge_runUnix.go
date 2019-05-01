@@ -17,18 +17,21 @@ func RunUnixBin(SubmissionID int, SubmissionPath string) bool {
 		return false
 	}
 
-	defer stdin.Close()
-
 	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
 
 	if err != nil {
 		return false
 	}
 
-	defer stdout.Close()
-
 	subProcess.Stdout = stdout
-	subProcess.Stderr = os.Stderr
+
+	stderr, err := os.OpenFile(SubmissionPath+"/data.err", os.O_CREATE|os.O_WRONLY, 0600)
+
+	if err != nil {
+		return false
+	}
+
+	subProcess.Stderr = stderr
 
 	if err = subProcess.Start(); err != nil {
 		return false
@@ -40,19 +43,21 @@ func RunUnixBin(SubmissionID int, SubmissionPath string) bool {
 		return false
 	}
 
-	defer fi.Close()
-
 	inputBuff := bufio.NewReader(fi)
 
 	for {
 		a, _, c := inputBuff.ReadLine()
 		if c == io.EOF {
+			stdin.Close()
 			break
 		}
 		io.WriteString(stdin, string(a)+"\n")
 	}
 
 	subProcess.Wait()
+
+	stdout.Close()
+	fi.Close()
 
 	return true
 }
@@ -66,17 +71,21 @@ func RunPython2(SubmissionID int, SubmissionPath string) bool {
 		return false
 	}
 
-	defer stdin.Close()
-
 	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
 
 	if err != nil {
 		return false
 	}
 
-	defer stdout.Close()
-
 	subProcess.Stdout = stdout
+
+	stderr, err := os.OpenFile(SubmissionPath+"/data.err", os.O_CREATE|os.O_WRONLY, 0600)
+
+	if err != nil {
+		return false
+	}
+
+	subProcess.Stderr = stderr
 
 	if err = subProcess.Start(); err != nil {
 		return false
@@ -88,19 +97,21 @@ func RunPython2(SubmissionID int, SubmissionPath string) bool {
 		return false
 	}
 
-	defer fi.Close()
-
 	inputBuff := bufio.NewReader(fi)
 
 	for {
 		a, _, c := inputBuff.ReadLine()
 		if c == io.EOF {
+			stdin.Close()
 			break
 		}
 		io.WriteString(stdin, string(a)+"\n")
 	}
 
 	subProcess.Wait()
+
+	stdout.Close()
+	fi.Close()
 
 	return true
 }
@@ -114,17 +125,21 @@ func RunPython3(SubmissionID int, SubmissionPath string) bool {
 		return false
 	}
 
-	defer stdin.Close()
-
 	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
 
 	if err != nil {
 		return false
 	}
 
-	defer stdout.Close()
-
 	subProcess.Stdout = stdout
+
+	stderr, err := os.OpenFile(SubmissionPath+"/data.err", os.O_CREATE|os.O_WRONLY, 0600)
+
+	if err != nil {
+		return false
+	}
+
+	subProcess.Stderr = stderr
 
 	if err = subProcess.Start(); err != nil {
 		return false
@@ -135,8 +150,6 @@ func RunPython3(SubmissionID int, SubmissionPath string) bool {
 	if err != nil {
 		return false
 	}
-
-	defer fi.Close()
 
 	inputBuff := bufio.NewReader(fi)
 
@@ -149,6 +162,9 @@ func RunPython3(SubmissionID int, SubmissionPath string) bool {
 	}
 
 	subProcess.Wait()
+
+	stdout.Close()
+	fi.Close()
 
 	return true
 }

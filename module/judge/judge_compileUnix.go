@@ -6,7 +6,7 @@ import (
 )
 
 func CompileUnixC11(SubmissionID int, lang string) bool {
-	cmd := exec.Command("gcc", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.c", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++11", "-lm")
+	cmd := exec.Command("gcc", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.c", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++11", "-lm", "-DONLINE_JUDGE")
 	err := cmd.Run()
 
 	if err != nil {
@@ -17,7 +17,7 @@ func CompileUnixC11(SubmissionID int, lang string) bool {
 }
 
 func CompileUnixCPP11(SubmissionID int, lang string) bool {
-	cmd := exec.Command("g++", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.cpp", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++11", "-lm")
+	cmd := exec.Command("g++", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.cpp", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++11", "-lm", "-DONLINE_JUDGE")
 	err := cmd.Run()
 
 	if err != nil {
@@ -28,7 +28,7 @@ func CompileUnixCPP11(SubmissionID int, lang string) bool {
 }
 
 func CompileUnixCPP14(SubmissionID int, lang string) bool {
-	cmd := exec.Command("g++", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.cpp", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++14", "-lm")
+	cmd := exec.Command("g++", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.cpp", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++14", "-lm", "-DONLINE_JUDGE")
 	err := cmd.Run()
 
 	if err != nil {
@@ -39,7 +39,7 @@ func CompileUnixCPP14(SubmissionID int, lang string) bool {
 }
 
 func CompileUnixCPP17(SubmissionID int, lang string) bool {
-	cmd := exec.Command("g++", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.cpp", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++17", "-lm")
+	cmd := exec.Command("g++", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main.cpp", "-o", getPath()+"/src/"+strconv.Itoa(SubmissionID)+"/main", "--std=c++17", "-lm", "-DONLINE_JUDGE")
 	err := cmd.Run()
 
 	if err != nil {
