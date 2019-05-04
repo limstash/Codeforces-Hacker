@@ -4,18 +4,35 @@ import (
 	"errors"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
-// HTTPGetByte will send a GET query to remote server and return in []byte
-func HTTPGetByte(uri string, cookie *[]*http.Cookie, header map[string]string) ([]byte, error) {
-	client := &http.Client{}
+func redirectRules(req *http.Request, via []*http.Request) error {
+	if len(via) >= 0 {
+		return errors.New("No Redirect")
+	}
+	return nil
+}
+
+func httpGetQuery(uri string, cookie *[]*http.Cookie, header map[string]string, isRedirect bool) ([]byte, bool, error) {
+	var client *http.Client
+
+	if isRedirect {
+		client = &http.Client{
+			CheckRedirect: redirectRules,
+		}
+	} else {
+		client = &http.Client{}
+	}
+
+	var redirectStatus bool
 
 	req, err := http.NewRequest("GET", uri, nil)
 
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
@@ -35,15 +52,22 @@ func HTTPGetByte(uri string, cookie *[]*http.Cookie, header map[string]string) (
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return nil, err
+		flysnowRegexp := regexp.MustCompile(`No Redirect`)
+		params := flysnowRegexp.FindStringSubmatch(err.Error())
+
+		if len(params) == 0 {
+			return nil, false, err
+		} else {
+			redirectStatus = true
+		}
 	}
 
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 
-	if resp.StatusCode != 200 {
-		return nil, errors.New("Return HTTP Code " + strconv.Itoa(resp.StatusCode))
+	if resp.StatusCode >= 400 {
+		return nil, false, errors.New("Return HTTP Code " + strconv.Itoa(resp.StatusCode))
 	}
 
 	newCookie := resp.Cookies()
@@ -52,14 +76,23 @@ func HTTPGetByte(uri string, cookie *[]*http.Cookie, header map[string]string) (
 		*cookie = append(*cookie, newCookie[i])
 	}
 
-	return body, nil
+	return body, redirectStatus, nil
 }
 
-// HTTPPostByte will send a POST query to remote server and return in []byte
-func HTTPPostByte(uri string, cookie *[]*http.Cookie, header map[string]string, data map[string]string) ([]byte, error) {
-	client := &http.Client{}
+func httpPostQuery(uri string, cookie *[]*http.Cookie, header map[string]string, data map[string]string, isRedirect bool) ([]byte, bool, error) {
+	var client *http.Client
+
+	if isRedirect {
+		client = &http.Client{
+			CheckRedirect: redirectRules,
+		}
+	} else {
+		client = &http.Client{}
+	}
 
 	var postdata http.Request
+	var redirectStatus bool
+
 	postdata.ParseForm()
 
 	for dataName, dataValue := range data {
@@ -70,7 +103,9 @@ func HTTPPostByte(uri string, cookie *[]*http.Cookie, header map[string]string, 
 	req, err := http.NewRequest("POST", uri, strings.NewReader(bodystr))
 
 	if err != nil {
-		return nil, err
+		return nil, false, err
+	} else {
+		redirectStatus = true
 	}
 
 	req.Header.Set("Accept", "application/json, text/javascript, */*; q=0.01")
@@ -90,11 +125,16 @@ func HTTPPostByte(uri string, cookie *[]*http.Cookie, header map[string]string, 
 	resp, err := client.Do(req)
 
 	if err != nil {
-		return nil, err
+		flysnowRegexp := regexp.MustCompile(`No Redirect`)
+		params := flysnowRegexp.FindStringSubmatch(err.Error())
+
+		if len(params) == 0 {
+			return nil, false, err
+		}
 	}
 
-	if resp.StatusCode != 200 {
-		return nil, errors.New("Return HTTP Code " + strconv.Itoa(resp.StatusCode))
+	if resp.StatusCode >= 400 {
+		return nil, false, errors.New("Return HTTP Code " + strconv.Itoa(resp.StatusCode))
 	}
 
 	defer resp.Body.Close()
@@ -102,7 +142,7 @@ func HTTPPostByte(uri string, cookie *[]*http.Cookie, header map[string]string, 
 	body, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, false, err
 	}
 
 	newCookie := resp.Cookies()
@@ -111,7 +151,31 @@ func HTTPPostByte(uri string, cookie *[]*http.Cookie, header map[string]string, 
 		*cookie = append(*cookie, newCookie[i])
 	}
 
-	return body, nil
+	return body, redirectStatus, nil
+}
+
+// HTTPGetByte will send a GET query to remote server and return in []byte
+func HTTPGetByte(uri string, cookie *[]*http.Cookie, header map[string]string) ([]byte, error) {
+	a, _, b := httpGetQuery(uri, cookie, header, false)
+	return a, b
+}
+
+// HTTPPostByte will send a POST query to remote server and return in []byte
+func HTTPPostByte(uri string, cookie *[]*http.Cookie, header map[string]string, data map[string]string) ([]byte, error) {
+	a, _, b := httpPostQuery(uri, cookie, header, data, false)
+	return a, b
+}
+
+// HTTPGetByteNR will send a GET query to remote server without redirect and return in []byte
+func HTTPGetByteNR(uri string, cookie *[]*http.Cookie, header map[string]string) ([]byte, bool, error) {
+	a, b, c := httpGetQuery(uri, cookie, header, true)
+	return a, b, c
+}
+
+// HTTPPostByteNR will send a POST query to remote server without redirect and return in []byte
+func HTTPPostByteNR(uri string, cookie *[]*http.Cookie, header map[string]string, data map[string]string) ([]byte, bool, error) {
+	a, b, c := httpPostQuery(uri, cookie, header, data, true)
+	return a, b, c
 }
 
 // HTTPGet will send a Get query to remote server and return in string
@@ -124,4 +188,16 @@ func HTTPGet(uri string, cookie *[]*http.Cookie, header map[string]string) (stri
 func HTTPPost(uri string, cookie *[]*http.Cookie, header map[string]string, data map[string]string) (string, error) {
 	a, b := HTTPPostByte(uri, cookie, header, data)
 	return string(a), b
+}
+
+// HTTPGetNR will send a Get query to remote server without redirect and return in string
+func HTTPGetNR(uri string, cookie *[]*http.Cookie, header map[string]string) (string, bool, error) {
+	a, status, b := HTTPGetByteNR(uri, cookie, header)
+	return string(a), status, b
+}
+
+// HTTPPostNR will send a POST query to remote server without redirect and return in string
+func HTTPPostNR(uri string, cookie *[]*http.Cookie, header map[string]string, data map[string]string) (string, bool, error) {
+	a, status, b := HTTPPostByteNR(uri, cookie, header, data)
+	return string(a), status, b
 }
