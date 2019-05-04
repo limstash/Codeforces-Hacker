@@ -19,6 +19,19 @@ func getPath() string {
 	return rst
 }
 
+// GetCSRF will fetch CSRF token from https://codeforces.com
+func GetCSRF(cookie *[]*http.Cookie) (string, error) {
+	fmt.Println("[Info] Fetching CSRF token...")
+
+	CSRF, err := token.GetCSRF(cookie)
+
+	if err != nil || CSRF == "" {
+		return "", errors.New("[Error] Unable to fetching CSRF token")
+	}
+
+	return CSRF, nil
+}
+
 // Load will fetch contests info and CSRF token from https://codeforces.com
 func Load(cookie *[]*http.Cookie) ([]contest.Contest, string, error) {
 	fmt.Println("[Info] Fetching contests info...")
@@ -29,12 +42,10 @@ func Load(cookie *[]*http.Cookie) ([]contest.Contest, string, error) {
 		return nil, "", errors.New("[Error] Unable to fetching contest info")
 	}
 
-	fmt.Println("[Info] Fetching CSRF token...")
+	CSRF, err := GetCSRF(cookie)
 
-	CSRF, err := token.GetCSRF(cookie)
-
-	if err != nil || CSRF == "" {
-		return nil, "", errors.New("[Error] Unable to fetching CSRF token")
+	if err != nil {
+		return nil, "", err
 	}
 
 	return contests, CSRF, nil
