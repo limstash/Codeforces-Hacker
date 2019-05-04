@@ -11,7 +11,7 @@ import (
 )
 
 func version() {
-	fmt.Println("Codeforces Hacker v1.0")
+	fmt.Println("Codeforces Hacker v0.2")
 }
 
 // Cookie are the HTTP Cookies which saved from https://codeforces.com
@@ -64,12 +64,21 @@ func main() {
 		}
 
 		app.Login(&Cookie, CSRF)
+
+		fmt.Println("[Info] Refetching CSRF token...")
+		CSRF, e = app.GetCSRF(&Cookie)
+
+		if e != nil {
+			fmt.Println(e)
+			finish()
+		}
 	}
 
 	app.SaveData()
 
 	fmt.Println("[Info] Fetching submissions...")
 	submit := app.GetSubmission(&Cookie, contestInfo, choose)
+	fmt.Println("[Info] Fetching submissions successful")
 
 	fmt.Println(" ")
 
@@ -78,7 +87,7 @@ func main() {
 	}
 
 	for i := 0; i < len(submit); i++ {
-		flag, _ := app.TestCode(submit[i].SubmissionID, submit[i].Language, false, &Cookie, CSRF)
+		flag, e := app.TestCode(submit[i].SubmissionID, submit[i].Language, false, &Cookie, CSRF)
 
 		if flag == true {
 			fmt.Println("[Info] Submission " + strconv.Itoa(submit[i].SubmissionID) + " Accepted")
