@@ -25,7 +25,7 @@ func queryPassword() (string, error) {
 }
 
 func submitLogin(username string, password string, Cookie *[]*http.Cookie, CSRF string) (bool, string, error) {
-	resp, e := conn.HTTPPost("https://codeforces.com/enter?back=%2F", Cookie, map[string]string{"X-Csrf-Token": CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}, map[string]string{"action": "enter", "csrf_token": CSRF, "handleOrEmail": username, "password": password})
+	resp, redirect, e := conn.HTTPPostNR("https://codeforces.com/enter?back=%2F", Cookie, map[string]string{"X-Csrf-Token": CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}, map[string]string{"action": "enter", "csrf_token": CSRF, "handleOrEmail": username, "password": password})
 
 	if e != nil {
 		return false, "", e
@@ -45,16 +45,8 @@ func submitLogin(username string, password string, Cookie *[]*http.Cookie, CSRF 
 		return false, "Invalid handle/email or password", nil
 	}
 
-	flysnowRegexp = regexp.MustCompile(`/profile/` + username)
-	params = flysnowRegexp.FindStringSubmatch(resp)
-
-	if len(params) > 0 {
-		flysnowRegexp = regexp.MustCompile(`/submissions/` + username)
-		params = flysnowRegexp.FindStringSubmatch(resp)
-
-		if len(params) > 0 {
-			return true, "", nil
-		}
+	if redirect {
+		return true, "", nil
 	}
 
 	return false, "Unknown", nil
@@ -80,7 +72,10 @@ func Login(Cookie *[]*http.Cookie, CSRF string) error {
 
 		if msg != "" {
 			fmt.Println("[Info] " + msg + ", please retry")
+			continue
 		}
+
+		fmt.Println("[Info] Unknown Error")
 	}
 
 	return nil
