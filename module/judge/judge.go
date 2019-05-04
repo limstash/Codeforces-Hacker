@@ -22,7 +22,35 @@ func testOnLinux(SubmissionID int, Language string, customDiff bool) (bool, erro
 		return false, errors.New("Compile Error")
 	}
 
-	status = RunUnixCode(SubmissionID, Language)
+	status = RunCode(SubmissionID, Language)
+
+	if status == false {
+		return false, errors.New("Runtime Error")
+	}
+
+	if customDiff == false {
+		status = Diff(SubmissionID)
+
+		if status == false {
+			return false, errors.New("Wrong Answer")
+		}
+
+	} else {
+		//todo
+		panic("todo")
+	}
+
+	return true, nil
+}
+
+func testOnWindows(SubmissionID int, Language string, customDiff bool) (bool, error) {
+	status := CompileWindowsCode(SubmissionID, Language)
+
+	if status == false {
+		return false, errors.New("Compile Error")
+	}
+
+	status = RunCode(SubmissionID, Language)
 
 	if status == false {
 		return false, errors.New("Runtime Error")
@@ -45,6 +73,11 @@ func testOnLinux(SubmissionID int, Language string, customDiff bool) (bool, erro
 
 func judgeUnix(SubmissionID int, Language string, customDiff bool) (bool, error) {
 	res, e := testOnLinux(SubmissionID, Language, customDiff)
+	return res, e
+}
+
+func judgeWindows(SubmissionID int, Language string, customDiff bool) (bool, error) {
+	res, e := testOnWindows(SubmissionID, Language, customDiff)
 	return res, e
 }
 
@@ -88,8 +121,8 @@ func Judge(SubmissionID int, Language string, customDiff bool) (bool, error) {
 		res, e := judgeUnix(SubmissionID, Language, customDiff)
 		return res, e
 	} else {
-		//todo
-		panic("todo")
+		res, e := judgeWindows(SubmissionID, Language, customDiff)
+		return res, e
 	}
 
 	return false, nil
