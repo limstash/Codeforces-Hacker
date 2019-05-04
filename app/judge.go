@@ -20,19 +20,19 @@ func runCode(SubmissionID int, Language string, customDiff bool) (bool, error) {
 	}
 
 	if e.Error() == "Not Support" {
-		return true, nil
+		fmt.Println("[Info] Submission " + strconv.Itoa(SubmissionID) + " Not Support")
 	}
 
 	if e.Error() == "Compile Error" {
-		fmt.Println("[Info] Code " + strconv.Itoa(SubmissionID) + " Compile Failed")
+		fmt.Println("[Info] Submission " + strconv.Itoa(SubmissionID) + " Compile Failed")
 	}
 
 	if e.Error() == "Runtime Error" {
-		fmt.Println("[Info] Code " + strconv.Itoa(SubmissionID) + " Runtime Error")
+		fmt.Println("[Info] Submission " + strconv.Itoa(SubmissionID) + " Runtime Error")
 	}
 
 	if e.Error() == "Wrong Answer" {
-		fmt.Println("[Info] Code " + strconv.Itoa(SubmissionID) + " Wrong Answer")
+		fmt.Println("[Info] Submission " + strconv.Itoa(SubmissionID) + " Wrong Answer")
 	}
 
 	return false, e
