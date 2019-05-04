@@ -169,7 +169,7 @@ func RunPython3(SubmissionID int, SubmissionPath string) bool {
 	return true
 }
 
-func RunUnixCode(SubmissionID int, lang string) bool {
+func RunCode(SubmissionID int, lang string) bool {
 	SubmissionPath := getPath() + "/src/" + strconv.Itoa(SubmissionID)
 
 	result := true
