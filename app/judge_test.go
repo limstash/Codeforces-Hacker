@@ -44,7 +44,7 @@ func Test_TestCode(t *testing.T) {
 
 	status, e := TestCode(51737890, "Python 3", false, &Cookie, CSRF)
 
-	if status == false || (e != nil && e.Error != "Not Support") {
+	if status == false || (e != nil && e.Error() != "Not Support") {
 		t.Error("App judge failed at test Submission 51737890 with Python3")
 		if e != nil {
 			t.Error(e)
@@ -55,7 +55,7 @@ func Test_TestCode(t *testing.T) {
 
 	status, e = TestCode(51837213, "Python 2", false, &Cookie, CSRF)
 
-	if status == false || (e != nil && e.Error != "Not Support") {
+	if status == false || (e != nil && e.Error() != "Not Support") {
 		t.Error("App judge failed at test Submission 51837213 with Python2")
 		if e != nil {
 			t.Error(e)
@@ -66,7 +66,7 @@ func Test_TestCode(t *testing.T) {
 
 	status, e = TestCode(51812034, "GNU C++17", false, &Cookie, CSRF)
 
-	if status == false || (e != nil && e.Error != "Not Support") {
+	if status == false || (e != nil && e.Error() != "Not Support") {
 		t.Error("App judge failed at test Submission 51812034 with GNU C++17")
 		if e != nil {
 			t.Error(e)
@@ -77,7 +77,7 @@ func Test_TestCode(t *testing.T) {
 
 	status, e = TestCode(51856295, "GNU C++14", false, &Cookie, CSRF)
 
-	if status == false || (e != nil && e.Error != "Not Support") {
+	if status == false || (e != nil && e.Error() != "Not Support") {
 		t.Error("App judge failed at test Submission 51856295 with GNU C++14")
 		if e != nil {
 			t.Error(e)
@@ -88,7 +88,7 @@ func Test_TestCode(t *testing.T) {
 
 	status, e = TestCode(51726415, "GNU C++11", false, &Cookie, CSRF)
 
-	if status == false || (e != nil && e.Error != "Not Support") {
+	if status == false || (e != nil && e.Error() != "Not Support") {
 		t.Error("App judge failed at test Submission 51726415 with GNU C++11")
 		if e != nil {
 			t.Error(e)
@@ -99,7 +99,7 @@ func Test_TestCode(t *testing.T) {
 
 	status, e = TestCode(51731138, "Go", false, &Cookie, CSRF)
 
-	if status == false || (e != nil && e.Error != "Not Support") {
+	if status == false || (e != nil && e.Error() != "Not Support") {
 		t.Error("App judge failed at test Submission 51731138 with Go")
 		if e != nil {
 			t.Error(e)
@@ -110,7 +110,7 @@ func Test_TestCode(t *testing.T) {
 
 	status, e = TestCode(52556322, "GNU C11", false, &Cookie, CSRF)
 
-	if status == false || (e != nil && e.Error != "Not Support") {
+	if status == false || (e != nil && e.Error() != "Not Support") {
 		t.Error("App judge failed at test Submission 52556322 with GNU C11")
 		if e != nil {
 			t.Error(e)
