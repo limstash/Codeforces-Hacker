@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 )
 
 func getPath() string {
@@ -71,13 +72,21 @@ func testOnWindows(SubmissionID int, Language string, customDiff bool) (bool, er
 	return true, nil
 }
 
+func cleanData(SubmissionID int) {
+	os.RemoveAll(getPath() + "/src/" + strconv.Itoa(SubmissionID) + "/")
+}
+
 func judgeUnix(SubmissionID int, Language string, customDiff bool) (bool, error) {
 	res, e := testOnLinux(SubmissionID, Language, customDiff)
+	cleanData(SubmissionID)
+
 	return res, e
 }
 
 func judgeWindows(SubmissionID int, Language string, customDiff bool) (bool, error) {
 	res, e := testOnWindows(SubmissionID, Language, customDiff)
+	cleanData(SubmissionID)
+
 	return res, e
 }
 
