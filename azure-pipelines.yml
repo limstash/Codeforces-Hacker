@@ -11,33 +11,17 @@ trigger:
 
 pr: none
 
-variables:
-  GOPATH: '$(system.defaultWorkingDirectory)/gopath'
-
 jobs:
 - job: build
   timeoutInMinutes: 60
 
   pool:
-    vmImage: 'macOS-10.13'
-
-  variables:
-    GOBIN:  '$(GOPATH)/bin' # Go binaries path
-    GOROOT: '/usr/local/go1.11' # Go installation path
-    modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
+    vmImage: 'Ubuntu 16.04'
 
   steps:
-  - script: |
-      mkdir -p '$(GOBIN)'
-      mkdir -p '$(GOPATH)/pkg'
-      mkdir -p '$(modulePath)'
-      shopt -s extglob
-      shopt -s dotglob
-      mv !(gopath) '$(modulePath)'
-      echo '##vso[task.prependpath]$(GOBIN)'
-      echo '##vso[task.prependpath]$(GOROOT)/bin'
-    displayName: 'Set up the Go workspace'
-
+  - task: GoTool@0
+    inputs:
+      version: '1.12'
   - script: |
       go version
       go get -v -t -d ./...
@@ -45,48 +29,46 @@ jobs:
           curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
           dep ensure
       fi
-
-      sudo apt-get install gcc g++ python2.7 python3
       
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Get dependencies'
 
   - script: |
       make build-linux64
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Build for Linux 64'
 
   - script: |
       make build-linux32
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Build for Linux 32'
 
   - script: |
       make build-windows64
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Build for Windows 64'
 
   - script: |
       make build-windows32
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Build for Windows 32'
 
   - script: |
       make build-osx64
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Build for OSX 64'
 
   - script: |
       make build-osx32
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Build for OSX 32'
 
   - script: |
       make test
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Test'
 
   - script: |
       bash <(curl -s https://codecov.io/bash) -t 3d625ec9-4ce0-40a8-97c4-af45c5930521
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Upload Codecov'
