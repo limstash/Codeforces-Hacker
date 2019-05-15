@@ -11,6 +11,9 @@ jobs:
     inputs:
       version: '1.12'
   - script: |
+      go get ./... 
+    displayName : 'Get Dependence'
+  - script: |
       go test -p 1 -v -timeout 30m ./...
     workingDirectory: '$(Build.SourcesDirectory)'
     displayName: 'Test'
