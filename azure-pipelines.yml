@@ -11,33 +11,20 @@ trigger:
 
 pr: none
 
+variables:
+  GOPATH: '$(system.defaultWorkingDirectory)/gopath'
+
 jobs:
-- template: azure-pipelines.template.yml
-  parameters:
-    name: linux
-    vmImage: 'ubuntu-16.04'
-
-- template: azure-pipelines.template.yml
-  parameters:
-    name: windows
-    vmImage: 'vs2017-win2016'
-
-- template: azure-pipelines.template.yml
-  parameters:
-    name: macos
-    vmImage: 'macOS-10.13'
-
 - job: build
   dependsOn: linux
   timeoutInMinutes: 60
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+    vmImage: 'macOS-10.13'
 
   variables:
     GOBIN:  '$(GOPATH)/bin' # Go binaries path
     GOROOT: '/usr/local/go1.11' # Go installation path
-    GOPATH: '$(system.defaultWorkingDirectory)/gopath' # Go workspace path
     modulePath: '$(GOPATH)/src/github.com/$(build.repository.name)' # Path to the module's code
 
   steps:
