@@ -12,8 +12,8 @@ trigger:
 pr: none
 
 jobs:
-- job: build
-  timeoutInMinutes: 60
+- job: linux
+  timeoutInMinutes: 30
 
   pool:
     vmImage: 'Ubuntu 16.04'
@@ -30,6 +30,67 @@ jobs:
           dep ensure
       fi
       
+    workingDirectory: '$(system.defaultWorkingDirectory)'
+    displayName: 'Get dependencies'
+  - script: |
+      go test ./... -v
+    workingDirectory: '$(system.defaultWorkingDirectory)'     
+    displayName: 'Test'
+
+- job: windows
+  timeoutInMinutes: 30
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  steps:
+  - task: GoTool@0
+    inputs:
+      version: '1.12'
+  - script: |
+      go version
+      go get -v -t -d ./...
+    workingDirectory: '$(system.defaultWorkingDirectory)'
+    displayName: 'Get dependencies'
+  - script: |
+      go test ./... -v
+    workingDirectory: '$(system.defaultWorkingDirectory)'     
+    displayName: 'Test'
+
+- job: macos  
+  timeoutInMinutes: 30
+
+  pool:
+    vmImage: 'macOS-10.13'
+
+  steps:
+  - task: GoTool@0
+    inputs:
+      version: '1.12'
+  - script: |
+      go version
+      go get -v -t -d ./...
+    workingDirectory: '$(system.defaultWorkingDirectory)'
+    displayName: 'Get dependencies'
+  - script: |
+      go test ./... -v
+    workingDirectory: '$(system.defaultWorkingDirectory)'     
+    displayName: 'Test'
+
+- job: build
+  dependsOn: linux
+  timeoutInMinutes: 60
+
+  pool:
+    vmImage: 'Ubuntu 16.04'
+
+  steps:
+  - task: GoTool@0
+    inputs:
+      version: '1.12'
+  - script: |
+      go version
+      go get -v -t -d ./...
     workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Get dependencies'
 
@@ -62,13 +123,3 @@ jobs:
       make build-osx32
     workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Build for OSX 32'
-
-  - script: |
-      make test
-    workingDirectory: '$(system.defaultWorkingDirectory)'
-    displayName: 'Test'
-
-  - script: |
-      bash <(curl -s https://codecov.io/bash) -t 3d625ec9-4ce0-40a8-97c4-af45c5930521
-    workingDirectory: '$(system.defaultWorkingDirectory)'
-    displayName: 'Upload Codecov'
