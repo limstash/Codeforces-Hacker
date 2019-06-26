@@ -64,9 +64,9 @@ func Test_readConfig(t *testing.T) {
 	}
 
 	if status == true {
-		t.Log("Package app - readConfig Test Passed")
+		t.Log("Package app - readConfig test Passed")
 	} else {
-		t.Log("Package app - readConfig Test Failed")
+		t.Log("Package app - readConfig test Failed")
 	}
 
 	clean()
