@@ -2,25 +2,38 @@ package code
 
 import (
 	"bufio"
-	"net/http"
 	"os"
-	"os/exec"
-	"path/filepath"
-	"runtime"
 	"strconv"
 
 	"github.com/bitly/go-simplejson"
 	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
+
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
-func QueryCode(SubmissionID int, cookie *[]*http.Cookie, CSRF string) (string, error) {
-	res, err := conn.HTTPPostByte("https://codeforces.com/data/submitSource", cookie, map[string]string{"X-Csrf-Token": CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}, map[string]string{"submissionId": strconv.Itoa(SubmissionID), "csrf_token": CSRF})
+func apiQueryCode(SubmissionID int, auth *Authentication, server string) (Response, error) {
+	request := Request{}
+
+	request.URL = server + "/data/submitSource"
+	request.Method = "POST"
+	request.NotRedirect = false
+	request.Authentication = auth
+	request.Header = map[string]string{"X-Csrf-Token": auth.CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}
+	request.Data = map[string]string{"submissionId": strconv.Itoa(SubmissionID), "csrf_token": auth.CSRF}
+
+	response, err := conn.HTTPRequest(request)
+
+	return response, err
+}
+
+func QueryCode(SubmissionID int, auth *Authentication, server string) (string, error) {
+	response, err := apiQueryCode(SubmissionID, auth, server)
 
 	if err != nil {
 		return "", err
 	}
 
-	js, e := simplejson.NewJson(res)
+	js, e := simplejson.NewJson(response.ResponseBody)
 
 	if e != nil {
 		return "", e
@@ -35,14 +48,7 @@ func QueryCode(SubmissionID int, cookie *[]*http.Cookie, CSRF string) (string, e
 	return source, nil
 }
 
-func getPath() string {
-	file, _ := exec.LookPath(os.Args[0])
-	path, _ := filepath.Abs(file)
-	rst := filepath.Dir(path)
-	return rst
-}
-
-func saveCodeOnUnix(SubmissionID int, Language string, code string) error {
+func SaveCode(submission Submission, config Config) error {
 	suffix := map[string]string{
 		"GNU C11":   "c",
 		"GNU C++11": "cpp",
@@ -53,38 +59,9 @@ func saveCodeOnUnix(SubmissionID int, Language string, code string) error {
 		"Python 3":  "py",
 	}
 
-	SubmissionPath := getPath() + "/src/" + strconv.Itoa(SubmissionID)
+	SubmissionPath := config.Path + "/src/" + strconv.Itoa(submission.SubmissionID)
 
-	outputFile, err := os.OpenFile(SubmissionPath+"/main."+suffix[Language], os.O_WRONLY|os.O_CREATE, 0666)
-
-	if err != nil {
-		return err
-	}
-
-	defer outputFile.Close()
-
-	outputWriter := bufio.NewWriter(outputFile)
-
-	outputWriter.WriteString(code)
-	outputWriter.Flush()
-
-	return nil
-}
-
-func saveCodeOnWindows(SubmissionID int, Language string, code string) error {
-	suffix := map[string]string{
-		"GNU C11":   "c",
-		"GNU C++11": "cpp",
-		"GNU C++14": "cpp",
-		"GNU C++17": "cpp",
-		"Go":        "go",
-		"Python 2":  "py",
-		"Python 3":  "py",
-	}
-
-	SubmissionPath := getPath() + "\\src\\" + strconv.Itoa(SubmissionID)
-
-	outputFile, err := os.OpenFile(SubmissionPath+"\\main."+suffix[Language], os.O_WRONLY|os.O_CREATE, 0666)
+	outputFile, err := os.OpenFile(SubmissionPath+"/main."+suffix[submission.Language], os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
 		return err
@@ -94,18 +71,8 @@ func saveCodeOnWindows(SubmissionID int, Language string, code string) error {
 
 	outputWriter := bufio.NewWriter(outputFile)
 
-	outputWriter.WriteString(code)
+	outputWriter.WriteString(submission.Code)
 	outputWriter.Flush()
 
 	return nil
-}
-
-func SaveCode(SubmissionID int, Language string, code string) error {
-	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		e := saveCodeOnUnix(SubmissionID, Language, code)
-		return e
-	}
-
-	e := saveCodeOnWindows(SubmissionID, Language, code)
-	return e
 }

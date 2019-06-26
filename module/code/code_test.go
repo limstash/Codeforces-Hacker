@@ -1,116 +1,134 @@
 package code
 
 import (
-	"net/http"
 	"os"
-	"runtime"
+	"os/exec"
+	"path/filepath"
 	"testing"
 
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
 )
 
 func Test_QueryCode(t *testing.T) {
-	var GlobalCookie []*http.Cookie
-
-	CSRF, err := token.GetCSRF(&GlobalCookie)
-
-	if err != nil {
-		t.Skip("Fetched CSRF Failed, Skipped")
-	}
-
-	res, e := QueryCode(53127485, &GlobalCookie, CSRF)
 	status := true
 
-	if e != nil {
-		if res != "" {
-			t.Error("Module code return not null with error")
-		}
-		t.Error(e)
-		status = false
-	} else if res == "" {
-		t.Error("No Response from codeforces.com")
-		status = false
-	} else if GlobalCookie == nil || len(GlobalCookie) == 0 {
-		t.Error("Cookie is an empty field")
+	auth := Authentication{}
+	err := token.GetCSRF(&auth, "https://codeforces.com")
+
+	res, err := QueryCode(56065447, &auth, "https://codeforces.com")
+
+	if err != nil {
+		t.Error(err)
 		status = false
 	}
 
-	if status == false {
-		t.Log("Query Code Test Failed")
+	if len(res) <= 10 {
+		t.Error("Test Failed: the string return by QueryCode is too short")
+		status = false
+	}
+
+	if status == true {
+		t.Log("Package code - QueryCode test passed")
 	} else {
-		t.Log("Query Code Test Passed")
+		t.Log("Package code - QueryCode test failed")
 	}
 }
 
-func Test_Save(t *testing.T) {
+func getPath() string {
+	file, _ := exec.LookPath(os.Args[0])
+	path, _ := filepath.Abs(file)
+	rst := filepath.Dir(path)
+	return rst
+}
 
-	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
-		os.MkdirAll(getPath()+"/src/53319035", 0777)
-	} else {
-		os.MkdirAll(getPath()+"\\src\\53319035", 0777)
-	}
-
+func Test_SaveCode(t *testing.T) {
 	status := true
 
-	e := SaveCode(53319035, "GNU C++11", "test")
+	os.MkdirAll(getPath()+"/src/53319035", 0777)
+
+	auth := Authentication{}
+	err := token.GetCSRF(&auth, "https://codeforces.com")
+
+	if err != nil {
+		t.Skip("Fetch CSRF failed, skipped")
+	}
+
+	config := Config{}
+	config.Path = getPath()
+
+	submission := Submission{}
+	submission.SubmissionID = 53319035
+
+	code, err := QueryCode(53319035, &auth, "https://codeforces.com")
+	submission.Code = code
+
+	submission.Language = "GNU C++11"
+	e := SaveCode(submission, config)
 
 	if e != nil {
 		status = false
-		t.Error("Module code fail at saving GNU C++11 Code")
+		t.Error("Test Failed: (Case 01) SaveCode failed at saving GNU C++11 Code")
 		t.Error(e)
 	}
 
-	e = SaveCode(53319035, "GNU C++14", "test")
+	submission.Language = "GNU C++11"
+	e = SaveCode(submission, config)
 
 	if e != nil {
 		status = false
-		t.Error("Module code fail at saving GNU C++14 Code")
+		t.Error("Test Failed: (Case 02) SaveCode failed at saving GNU C++14 Code")
 		t.Error(e)
 	}
 
-	e = SaveCode(53319035, "GNU C++17", "test")
+	submission.Language = "GNU C++17"
+	e = SaveCode(submission, config)
 
 	if e != nil {
 		status = false
-		t.Error("Module code fail at saving GNU C++17 Code")
+		t.Error("Test Failed: (Case 03) SaveCode failed at saving GNU C++17 Code")
 		t.Error(e)
 	}
 
-	e = SaveCode(53319035, "GNU C11", "test")
+	submission.Language = "GNU C11"
+	e = SaveCode(submission, config)
 
 	if e != nil {
 		status = false
-		t.Error("Module code fail at saving GNU C11 Code")
+		t.Error("Test Failed: (Case 04) SaveCode failed at saving GNU C11 Code")
 		t.Error(e)
 	}
 
-	e = SaveCode(53319035, "Python2", "test")
+	submission.Language = "Python2"
+	e = SaveCode(submission, config)
 
 	if e != nil {
 		status = false
-		t.Error("Module code fail at saving Python2 Code")
+		t.Error("Test Failed: (Case 05) SaveCode failed at saving Python2 Code")
 		t.Error(e)
 	}
 
-	e = SaveCode(53319035, "Python3", "test")
+	submission.Language = "Python3"
+	e = SaveCode(submission, config)
 
 	if e != nil {
 		status = false
-		t.Error("Module code fail at saving Python3 Code")
+		t.Error("Test Failed: (Case 06) SaveCode failed at saving Python3 Code")
 		t.Error(e)
 	}
 
-	e = SaveCode(53319035, "Go", "test")
+	submission.Language = "Go"
+	e = SaveCode(submission, config)
 
 	if e != nil {
 		status = false
-		t.Error("Module code fail at saving Go Code")
+		t.Error("Test Failed: (Case 07) SaveCode failed at saving Golang Code")
 		t.Error(e)
 	}
 
 	if status == true {
-		t.Log("Save Code Test Passed")
+		t.Log("Package code - SaveCode test passed")
 	} else {
-		t.Log("Save Code Test Failed")
+		t.Log("Package code - SaveCode test failed")
 	}
 }
