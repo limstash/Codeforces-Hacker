@@ -1,4 +1,4 @@
-package contest
+package problem
 
 import (
 	"testing"
