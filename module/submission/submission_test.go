@@ -16,9 +16,9 @@ func Test_GetSubmission(t *testing.T) {
 	contest := Contest{}
 	problem := Problem{}
 
-	contest.ID = 1175
-	contest.StartTimeSeconds = 1559745300
-	contest.DurationSeconds = 7200
+	contest.ID = 566
+	contest.StartTimeSeconds = 1438273200
+	contest.DurationSeconds = 10800
 
 	problem.Index = "A"
 
