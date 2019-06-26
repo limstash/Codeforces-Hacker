@@ -2,32 +2,33 @@ package token
 
 import (
 	"testing"
-	"net/http"
+
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
 func Test_GetCSRF(t *testing.T) {
-	var GlobalCookie []*http.Cookie
-
-	csrf, e := GetCSRF(&GlobalCookie)
 	status := true
+	authentication := Authentication{}
 
-	if e != nil {
-		if csrf != "" {
-			t.Error("Module token return not null with error")
+	err := GetCSRF(&authentication, "https://codeforces.com")
+
+	if err != nil {
+		if authentication.CSRF != "" {
+			t.Error("Test failed: GetCSRF throw an error even if CSRF exists")
 		}
 
-		t.Error(e);
+		t.Error(err)
 		status = false
 	}
 
-	if csrf == "" && (e == nil || e.Error() != "CSRF is an empty field") {
-		t.Error("Module token failed in checking empty CSRF")
+	if authentication.CSRF == "" && (err == nil || err.Error() != "CSRF not exists") {
+		t.Error("Test failed: GetCSRF should throw an error here (CSRF not exists)")
 		status = false
 	}
 
-	if status == false {
-		t.Log("Get CSRF Test Failed");
-	}else{
-		t.Log("Get CSRF Test Passed")
+	if status == true {
+		t.Log("Package token - GetCSRF test passed")
+	} else {
+		t.Log("Package token - GetCSRF test failed")
 	}
 }

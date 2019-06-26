@@ -2,33 +2,41 @@ package token
 
 import (
 	"errors"
-	"net/http"
 	"strings"
 
 	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
 	"github.com/opesun/goquery"
+
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
 // GetCSRF will fetch CSRF token from codeforces's login page
-func GetCSRF(cookie *[]*http.Cookie) (string, error) {
+func GetCSRF(authentication *Authentication, server string) error {
+	request := Request{}
 
-	body, e := conn.HTTPGet("https://codeforces.com/enter?back=%2F", cookie, nil)
+	request.URL = server + "/enter?back=%2F"
+	request.Method = "GET"
+	request.NotRedirect = false
+	request.Authentication = authentication
 
-	if e != nil {
-		return "", e
+	response, err := conn.HTTPRequest(request)
+
+	if err != nil {
+		return err
 	}
 
-	html, e := goquery.Parse(strings.NewReader(body))
+	html, err := goquery.Parse(strings.NewReader(string(response.ResponseBody)))
 
-	if e != nil {
-		return "", e
+	if err != nil {
+		return err
 	}
 
 	csrf := html.Find(".csrf-token").Eq(0).Attr("data-csrf")
 
 	if csrf == "" {
-		return "", errors.New("CSRF is an empty field")
+		return errors.New("CSRF not exists")
 	}
 
-	return csrf, nil
+	authentication.CSRF = csrf
+	return nil
 }
