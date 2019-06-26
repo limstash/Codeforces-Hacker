@@ -2,9 +2,7 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"os"
 
 	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
@@ -19,21 +17,20 @@ func readConfig(configFilePath string) ([]byte, error) {
 	return configData, nil
 }
 
-func LoadConfig(configFilePath string) Config {
+func LoadConfig(configFilePath string) (Config, error) {
+	config := Config{}
+
 	configData, err := readConfig(configFilePath)
 
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return config, err
 	}
 
-	config := Config{}
 	err = json.Unmarshal(configData, &config)
 
 	if err != nil {
-		fmt.Println(err.Error())
-		os.Exit(1)
+		return config, err
 	}
 
-	return config
+	return config, nil
 }
