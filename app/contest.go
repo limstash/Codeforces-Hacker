@@ -1,119 +1,69 @@
 package app
 
 import (
-	"bufio"
 	"errors"
-	"fmt"
-	"net/http"
-	"os"
-	"strconv"
 	"strings"
 	"time"
 
-	"github.com/hytzongxuan/Codeforces-Hacker/module/contest"
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
 // FindContest will find the latest contest in the contests array
-func FindContest(contests []contest.Contest) (contest.Contest, error) {
-	contestsSiz := len(contests)
+func FindContest(contests []Contest, id int) (Contest, error) {
+	contest := Contest{}
 
-	if contestsSiz <= 0 {
-		return contest.Contest{}, errors.New("[Info] Contests is an empty field")
+	contestsSiz := len(contests)
+	contestIndex := -1
+
+	for i := 0; i < contestsSiz; i++ {
+		if contests[i].ID == id {
+			contestIndex = i
+			break
+		}
 	}
 
-	var lastContestTime int64 = 100000000
-	lastContestIndex := -1
+	if contestIndex == -1 {
+		return contest, errors.New("No such contest")
+	}
+
+	contest = contests[contestIndex]
+	log(3, "Switch to "+contest.Name)
 
 	currentTime := time.Now().Unix()
 
-	for i := 0; i < contestsSiz; i++ {
-		if strings.Contains(contests[i].Name, "Educational") || strings.Contains(contests[i].Name, "Div. 3") {
-			timeDelta := currentTime - contests[i].StartTimeSeconds
-
-			if timeDelta > 0 && timeDelta < lastContestTime {
-				lastContestTime = timeDelta
-				lastContestIndex = i
-			}
-
-		}
+	if !strings.Contains(contest.Name, "Educational") && !strings.Contains(contest.Name, "Div. 3") {
+		return contest, errors.New("This contest is not available to hack")
 	}
 
-	if lastContestIndex == -1 {
-		return contest.Contest{}, errors.New("[Info] No vaild contest")
+	timeDelta := currentTime - contest.StartTimeSeconds
+
+	if timeDelta <= 12*3600 {
+		return contest, errors.New("Contest finished")
 	}
 
-	fmt.Println("[Info] The current contest is " + contests[lastContestIndex].Name)
-
-	openHackingPhase := currentTime - contests[lastContestIndex].StartTimeSeconds - contests[lastContestIndex].DurationSeconds
-
-	if openHackingPhase > 12*3600 {
-		return contest.Contest{}, errors.New("[Info] Open hacking phase finished")
-	}
-
-	fmt.Println("[Info] Open hacking phase running")
-
-	return contests[lastContestIndex], nil
+	return contest, nil
 }
 
-// ChooseProblem will fetch the problem in the contest and read user's input from stdin
-func ChooseProblem(ContestID int, cookie *[]*http.Cookie) (string, error) {
-	fmt.Println("[Info] Fetching Problems...")
+func FindProblem(problems []Problem, contest Contest, index string) (Problem, error) {
+	problem := Problem{}
 
-	problems, e := contest.GetProblems(ContestID, cookie)
+	problemSiz := len(problems)
+	problemIndex := -1
 
-	if e != nil {
-		return "", e
-	}
-
-	fmt.Println("")
-	fmt.Println("Please choose the problem you want to hack")
-	fmt.Println("")
-
-	for i := 0; i < len(problems); i++ {
-		fmt.Println("[" + strconv.Itoa(i+1) + "] " + problems[i].Index + ". " + problems[i].Name)
-	}
-
-	var choose int
-
-	fmt.Println("")
-	fmt.Printf("Your Choose is [1-" + strconv.Itoa(len(problems)) + "] : ")
-
-	myReader := bufio.NewReader(nil)
-	myReader.Reset(os.Stdin)
-	content, e := myReader.ReadString('\n')
-
-	if e != nil {
-		return "", e
-	}
-
-	fields := strings.Fields(content)
-
-	if fields == nil || len(fields) == 0 {
-		choose = 0
-	} else {
-		choose, e = strconv.Atoi(fields[0])
-	}
-
-	for e != nil || choose < 1 || choose > len(problems) {
-		fmt.Printf("Your Choose is [1-" + strconv.Itoa(len(problems)) + "] : ")
-
-		myReader = bufio.NewReader(nil)
-		myReader.Reset(os.Stdin)
-		content, e = myReader.ReadString('\n')
-
-		if e != nil {
-			return "", e
+	for i := 0; i < problemSiz; i++ {
+		if problems[i].ContestID == contest.ID && problems[i].Index == index {
+			problemIndex = i
+			break
 		}
-
-		fields = strings.Fields(content)
-
-		if fields == nil || len(fields) == 0 {
-			choose = 0
-			continue
-		}
-
-		choose, e = strconv.Atoi(fields[0])
 	}
 
-	return problems[choose-1].Index, nil
+	if problemIndex == -1 {
+		return problem, errors.New("No such problem")
+	}
+
+	problem = problems[problemIndex]
+
+	log(3, "Switch to Problem "+problem.Index+" - "+problem.Name)
+
+	return problem, nil
 }

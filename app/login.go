@@ -52,14 +52,14 @@ func submitLogin(account Account, auth *Authentication, server string) (bool, er
 	return false, errors.New("Unknown Error")
 }
 
-func Login(config Config, auth *Authentication, server string) {
+func Login(config Config, auth *Authentication) {
 	if config.IsAutoLogin {
-		status, err := submitLogin(config.Account, auth, server)
+		status, err := submitLogin(config.Account, auth, config.Server)
 
 		if status == false {
 			log(1, err.Error())
 		}
 
-		token.GetCSRF(auth, server)
+		token.GetCSRF(auth, config.Server)
 	}
 }
