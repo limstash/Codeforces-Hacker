@@ -2,60 +2,72 @@ package submission
 
 import (
 	"errors"
-	"net/http"
 	"strconv"
 
 	"github.com/bitly/go-simplejson"
 	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
+
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
-func querySubmission(contestID int, cookie *[]*http.Cookie) ([]byte, error) {
-	res, err := conn.HTTPGetByte("http://codeforces.com/api/contest.status?contestId="+strconv.Itoa(contestID)+"&from=1&count=100000000", cookie, map[string]string{"HOST": "codeforces.com"})
+func apiQuerySubmission(contestID int, auth *Authentication, server string) (Response, error) {
+	request := Request{}
+
+	request.URL = server + "/api/contest.status?contestId=" + strconv.Itoa(contestID) + "&from=1&count=100000000"
+	request.Method = "GET"
+	request.NotRedirect = false
+	request.Authentication = auth
+	request.Header = map[string]string{"Host": "codeforces.com"}
+
+	response, err := conn.HTTPRequest(request)
+
+	return response, err
+}
+
+func GetSubmission(contest Contest, problem Problem, auth *Authentication, server string) ([]Submission, error) {
+	submission := []Submission{}
+
+	response, err := apiQuerySubmission(contest.ID, auth, server)
 
 	if err != nil {
-		return nil, err
+		return submission, err
 	}
 
-	return res, nil
-}
+	js, err := simplejson.NewJson(response.ResponseBody)
 
-type Submission struct {
-	SubmissionID int
-	Language     string
-}
-
-func GetSubmissionArray(contestID int, cookie *[]*http.Cookie, startTime int64, duringTime int64, problem string) ([]Submission, error) {
-	resp, e := querySubmission(contestID, cookie)
-
-	if e != nil {
-		return nil, e
+	if err != nil {
+		return submission, err
 	}
 
-	js, e := simplejson.NewJson(resp)
+	status, err := js.Get("status").String()
 
-	status, e := js.Get("status").String()
+	if err != nil {
+		return submission, err
+	}
 
 	if status != "OK" {
-		return nil, errors.New("Codeforces Return Error Response")
+		return submission, errors.New("Codeforces API return unknown error")
 	}
 
-	submissions, e := js.Get("result").Array()
+	submissions, err := js.Get("result").Array()
 
-	data := []Submission{}
+	if err != nil {
+		return submission, err
+	}
 
 	for i := 0; i < len(submissions); i++ {
-		submission := js.Get("result").GetIndex(i)
+		submissionInfo := js.Get("result").GetIndex(i)
 
-		verdict := submission.Get("verdict").MustString()
-		submissionID := submission.Get("id").MustInt()
-		language := submission.Get("programmingLanguage").MustString()
-		problemIndex := submission.Get("problem").Get("index").MustString()
-		submitTime := submission.Get("creationTimeSeconds").MustInt64()
+		verdict := submissionInfo.Get("verdict").MustString()
+		submissionID := submissionInfo.Get("id").MustInt()
+		language := submissionInfo.Get("programmingLanguage").MustString()
+		problemIndex := submissionInfo.Get("problem").Get("index").MustString()
+		submitTime := submissionInfo.Get("creationTimeSeconds").MustInt64()
 
-		if verdict == "OK" && problemIndex == problem && submitTime > startTime && submitTime <= startTime+duringTime {
-			data = append(data, Submission{submissionID, language})
+		if verdict == "OK" && problemIndex == problem.Index && submitTime > contest.StartTimeSeconds && submitTime <= contest.StartTimeSeconds+contest.DurationSeconds {
+			submission = append(submission, Submission{SubmissionID: submissionID, Language: language, Code: ""})
 		}
 	}
 
-	return data, nil
+	return submission, nil
 }
