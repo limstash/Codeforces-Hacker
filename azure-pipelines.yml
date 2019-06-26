@@ -126,5 +126,5 @@ jobs:
   - script: |
       make test
       bash <(curl -s https://codecov.io/bash) -t 3d625ec9-4ce0-40a8-97c4-af45c5930521
-    workingDirectory: '$(modulePath)'
+    workingDirectory: '$(system.defaultWorkingDirectory)'
     displayName: 'Upload Codecov'
