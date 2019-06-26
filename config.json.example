@@ -1,0 +1,17 @@
+{
+    "contest" : 1175, // The contest ID you want to hack
+    "problem" : "A", // The Problem index you want to hack
+
+    "autoLogin" : true, // Allow to login your account automatically
+    "autoHack" : true, // Allow to hacked automatically (must allow to auto-login)
+
+    "testcase" : {
+        "inputFile" : "./data.in", // Input testcase file
+        "outputFile" : "./data.ans" // Output testcase file
+    },
+
+    "account" : {
+        "username" : "user", // Your account username (only if you choose to auto-login)
+        "password" : "pass" // Your account Password (only iif you choose to auto-login)
+    }
+}
