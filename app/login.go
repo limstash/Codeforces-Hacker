@@ -1,82 +1,65 @@
 package app
 
 import (
-	"fmt"
-	"net/http"
+	"errors"
 	"regexp"
 
 	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
+	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
+
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
-func QueryLoginChoose() (bool, error) {
-	return GetUserResponseYN("\n", "Do you want to log in to your codeforces account (yes/no): ", "")
+func apiSubmitLogin(account Account, auth *Authentication, server string) (Response, error) {
+	request := Request{}
+
+	request.URL = server + "/enter?back=%2F"
+	request.Method = "POST"
+	request.NotRedirect = true
+	request.Authentication = auth
+	request.Data = map[string]string{"action": "enter", "csrf_token": auth.CSRF, "handleOrEmail": account.Username, "password": account.Password}
+	request.Header = map[string]string{"X-Csrf-Token": auth.CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}
+
+	response, err := conn.HTTPRequest(request)
+	return response, err
 }
 
-func QueryHackChoose() (bool, error) {
-	return GetUserResponseYN("", "Do you want to enable automatic hacking (yes/no): ", "")
-}
+func submitLogin(account Account, auth *Authentication, server string) (bool, error) {
+	response, err := apiSubmitLogin(account, auth, server)
 
-func queryUsername() (string, error) {
-	return GetUserResponseString("\n", "Username: ", "")
-}
-
-func queryPassword() (string, error) {
-	return GetUserResponseString("", "Password: ", "")
-}
-
-func submitLogin(username string, password string, Cookie *[]*http.Cookie, CSRF string) (bool, string, error) {
-	resp, redirect, e := conn.HTTPPostNR("https://codeforces.com/enter?back=%2F", Cookie, map[string]string{"X-Csrf-Token": CSRF, "X-Requested-With": "XMLHttpRequest", "Origin": "https://codeforces.com", "Referer": "https://codeforces.com/problemset/status", "Host": "codeforces.com"}, map[string]string{"action": "enter", "csrf_token": CSRF, "handleOrEmail": username, "password": password})
-
-	if e != nil {
-		return false, "", e
+	if err != nil {
+		return false, err
 	}
 
 	flysnowRegexp := regexp.MustCompile(`Specify correct handle or email`)
-	params := flysnowRegexp.FindStringSubmatch(resp)
+	params := flysnowRegexp.FindStringSubmatch(string(response.ResponseBody))
 
 	if len(params) > 0 {
-		return false, "Specify correct handle or email", nil
+		return false, errors.New("Specify correct handle or email")
 	}
 
 	flysnowRegexp = regexp.MustCompile(`Invalid handle/email or password`)
-	params = flysnowRegexp.FindStringSubmatch(resp)
+	params = flysnowRegexp.FindStringSubmatch(string(response.ResponseBody))
 
 	if len(params) > 0 {
-		return false, "Invalid handle/email or password", nil
+		return false, errors.New("Invalid handle/email or password")
 	}
 
-	if redirect {
-		return true, "", nil
+	if response.RedirectStatus {
+		return true, nil
 	}
 
-	return false, "Unknown", nil
+	return false, errors.New("Unknown Error")
 }
 
-func Login(Cookie *[]*http.Cookie, CSRF string) error {
-	for true {
-		username, _ := queryUsername()
-		password, _ := queryPassword()
+func Login(config Config, auth *Authentication, server string) {
+	if config.IsAutoLogin {
+		status, err := submitLogin(config.Account, auth, server)
 
-		status, msg, e := submitLogin(username, password, Cookie, CSRF)
-
-		if e != nil {
-			return e
+		if status == false {
+			log(1, err.Error())
 		}
 
-		fmt.Println("")
-
-		if status == true {
-			fmt.Println("[Info] Login Success")
-			break
-		}
-
-		if msg != "" {
-			fmt.Println("[Info] " + msg + ", please retry")
-			continue
-		}
-
-		fmt.Println("[Info] Unknown Error")
+		token.GetCSRF(auth, server)
 	}
-
-	return nil
 }
