@@ -66,9 +66,11 @@ type Contests struct {
 }
 
 type Problem struct {
-	ContestID int    `json:"contestId"`
-	Index     string `json:"index"`
-	Name      string `json:"name"`
+	ContestID   int    `json:"contestId"`
+	Index       string `json:"index"`
+	Name        string `json:"name"`
+	Memorylimit int
+	Timelimit   int
 }
 
 type ProblemList struct {
@@ -84,4 +86,5 @@ type Submission struct {
 	SubmissionID int
 	Language     string
 	Code         string
+	Path         string
 }
