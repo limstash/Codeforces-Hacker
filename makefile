@@ -8,7 +8,7 @@ BINARY_UNIX=$(BINARY_NAME)_unix
 BUILD_ENV = env
 CODECOV = /bin/bash codecov.sh
 
-all: deps test build
+all: deps build
 
 build: build-linux64 build-linux32 build-osx64 build-osx32 build-windows64 build-windows32
 
