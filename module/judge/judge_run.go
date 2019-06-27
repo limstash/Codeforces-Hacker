@@ -5,42 +5,61 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"strconv"
+	"runtime"
+	"syscall"
+	"time"
+
+	"github.com/shirou/gopsutil/process"
+
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
-func RunUnixBin(SubmissionID int, SubmissionPath string) bool {
-	subProcess := exec.Command(SubmissionPath + "/main")
+func Runcode(submission Submission, problem Problem) (bool, int, int) {
+
+	var command string
+	var args []string
+
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		command = GetUnixRunCommand(submission)
+		args = GetUnixRunArgs(submission)
+	} else {
+		command = GetWindowsRunCommand(submission)
+		args = GetWindowsRunArgs(submission)
+	}
+
+	subProcess := exec.Command(command, args...)
 
 	stdin, err := subProcess.StdinPipe()
 
 	if err != nil {
-		return false
+		return false, 0, 0
 	}
 
-	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
+	stdout, err := os.OpenFile(submission.Path+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
 
 	if err != nil {
-		return false
+		return false, 0, 0
 	}
 
 	subProcess.Stdout = stdout
 
-	stderr, err := os.OpenFile(SubmissionPath+"/data.err", os.O_CREATE|os.O_WRONLY, 0600)
+	stderr, err := os.OpenFile(submission.Path+"/data.err", os.O_CREATE|os.O_WRONLY, 0600)
 
 	if err != nil {
-		return false
+		return false, 0, 0
 	}
 
 	subProcess.Stderr = stderr
 
+	startStamp := time.Now().UnixNano() / 1e6
 	if err = subProcess.Start(); err != nil {
-		return false
+		return false, 0, 0
 	}
 
-	fi, err := os.Open(SubmissionPath + "/data.in")
+	fi, err := os.Open(submission.Path + "/data.in")
 
 	if err != nil {
-		return false
+		return false, 0, 0
 	}
 
 	inputBuff := bufio.NewReader(fi)
@@ -54,144 +73,46 @@ func RunUnixBin(SubmissionID int, SubmissionPath string) bool {
 		io.WriteString(stdin, string(a)+"\n")
 	}
 
-	subProcess.Wait()
+	var usedmemory uint64
+	usedmemory = 0
 
-	stdout.Close()
-	fi.Close()
+	memorylimitInt := problem.Memorylimit
+	memorylimitInt = memorylimitInt * 1024
 
-	return true
-}
+	timelimitInt := problem.Timelimit
 
-func RunPython2(SubmissionID int, SubmissionPath string) bool {
-	subProcess := exec.Command("python2", SubmissionPath+"/main.py")
+	go func(pid int32) {
+		isRun, _ := process.PidExists(pid)
+		processhandle, _ := process.NewProcess(pid)
 
-	stdin, err := subProcess.StdinPipe()
+		for isRun == true {
+			meminfo, e := processhandle.MemoryInfo()
 
-	if err != nil {
-		return false
-	}
+			if e == nil && meminfo.RSS > usedmemory {
+				usedmemory = meminfo.RSS
+			}
 
-	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
+			if int(usedmemory) > memorylimitInt {
+				syscall.Kill(int(pid), syscall.SIGKILL)
+			}
 
-	if err != nil {
-		return false
-	}
+			if int((time.Now().UnixNano()/1e6)-startStamp) >= timelimitInt+10 {
+				syscall.Kill(int(pid), syscall.SIGKILL)
+			}
 
-	subProcess.Stdout = stdout
-
-	stderr, err := os.OpenFile(SubmissionPath+"/data.err", os.O_CREATE|os.O_WRONLY, 0600)
-
-	if err != nil {
-		return false
-	}
-
-	subProcess.Stderr = stderr
-
-	if err = subProcess.Start(); err != nil {
-		return false
-	}
-
-	fi, err := os.Open(SubmissionPath + "/data.in")
-
-	if err != nil {
-		return false
-	}
-
-	inputBuff := bufio.NewReader(fi)
-
-	for {
-		a, _, c := inputBuff.ReadLine()
-		if c == io.EOF {
-			stdin.Close()
-			break
+			isRun, _ = process.PidExists(pid)
 		}
-		io.WriteString(stdin, string(a)+"\n")
-	}
+	}(int32(subProcess.Process.Pid))
 
-	subProcess.Wait()
+	err = subProcess.Wait()
+	endStamp := time.Now().UnixNano() / 1e6
+
+	if err != nil {
+		return false, int(endStamp - startStamp), int(usedmemory)
+	}
 
 	stdout.Close()
 	fi.Close()
 
-	return true
-}
-
-func RunPython3(SubmissionID int, SubmissionPath string) bool {
-	subProcess := exec.Command("python3", SubmissionPath+"/main.py")
-
-	stdin, err := subProcess.StdinPipe()
-
-	if err != nil {
-		return false
-	}
-
-	stdout, err := os.OpenFile(SubmissionPath+"/data.out", os.O_CREATE|os.O_WRONLY, 0600)
-
-	if err != nil {
-		return false
-	}
-
-	subProcess.Stdout = stdout
-
-	stderr, err := os.OpenFile(SubmissionPath+"/data.err", os.O_CREATE|os.O_WRONLY, 0600)
-
-	if err != nil {
-		return false
-	}
-
-	subProcess.Stderr = stderr
-
-	if err = subProcess.Start(); err != nil {
-		return false
-	}
-
-	fi, err := os.Open(SubmissionPath + "/data.in")
-
-	if err != nil {
-		return false
-	}
-
-	inputBuff := bufio.NewReader(fi)
-
-	for {
-		a, _, c := inputBuff.ReadLine()
-		if c == io.EOF {
-			break
-		}
-		io.WriteString(stdin, string(a)+"\n")
-	}
-
-	subProcess.Wait()
-
-	stdout.Close()
-	fi.Close()
-
-	return true
-}
-
-func RunCode(SubmissionID int, lang string) bool {
-	SubmissionPath := getPath() + "/src/" + strconv.Itoa(SubmissionID)
-
-	result := true
-
-	switch lang {
-	case "GNU C11":
-		result = RunUnixBin(SubmissionID, SubmissionPath)
-	case "GNU C++11":
-		result = RunUnixBin(SubmissionID, SubmissionPath)
-	case "GNU C++14":
-		result = RunUnixBin(SubmissionID, SubmissionPath)
-	case "GNU C++17":
-		result = RunUnixBin(SubmissionID, SubmissionPath)
-	case "Go":
-		result = RunUnixBin(SubmissionID, SubmissionPath)
-	case "Python 2":
-		result = RunPython2(SubmissionID, SubmissionPath)
-	case "Python 3":
-		result = RunPython3(SubmissionID, SubmissionPath)
-	default:
-		result = true
-	}
-
-	return result
+	return true, int(endStamp - startStamp), int(usedmemory)
 }

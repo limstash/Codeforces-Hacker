@@ -5,6 +5,8 @@ import (
 	"io"
 	"os"
 	"strconv"
+
+	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
 func min(a int, b int) int {
@@ -14,8 +16,8 @@ func min(a int, b int) int {
 	return b
 }
 
-func Diff(SubmissionID int) bool {
-	SubmissionPath := getPath() + "/src/" + strconv.Itoa(SubmissionID)
+func Diff(submission Submission) bool {
+	SubmissionPath := "./src/" + strconv.Itoa(submission.SubmissionID)
 	status := true
 
 	outputFile, err := os.Open(SubmissionPath + "/data.out")
