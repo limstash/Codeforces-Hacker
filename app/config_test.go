@@ -89,7 +89,7 @@ func Test_loadConfig(t *testing.T) {
 
 	data1, err := LoadConfig("config-test-01.json")
 
-	if data1.IsAutoHack != false || data1.IsAutoLogin != true || data1.ContestID != 1 || data1.ProblemID != "A" || data1.Testcase.InputFile != "./data/input" || data1.Testcase.OutputFile != "./data/output" || data1.Account.Username != "user" || data1.Account.Password != "pass" {
+	if data1.Settings.IsAutoHack != false || data1.Settings.IsAutoLogin != true || data1.Target.ContestID != 1 || data1.Target.ProblemID != "A" || data1.Testcase.InputFile != "./data/input" || data1.Testcase.OutputFile != "./data/output" || data1.Account.Username != "user" || data1.Account.Password != "pass" {
 		t.Error("Test Failed: (Case 02) LoadConfig return wrong result")
 		t.Error(data1)
 		status = false

@@ -12,14 +12,22 @@ type Testcase struct {
 	OutputFile string `json:"outputFile"`
 }
 
-type Config struct {
+type Settings struct {
 	Path   string
 	Server string
 
-	ContestID   int    `json:"contest"`
-	ProblemID   string `json:"problem"`
-	IsAutoLogin bool   `json:"autoLogin"`
-	IsAutoHack  bool   `json:"autohack"`
+	IsAutoLogin bool `json:"autoLogin"`
+	IsAutoHack  bool `json:"autohack"`
+}
+
+type Target struct {
+	ContestID int    `json:"contest"`
+	ProblemID string `json:"problem"`
+}
+
+type Config struct {
+	Target   Target   `json:"target"`
+	Settings Settings `json:"settings"`
 
 	Account  Account  `json:"account"`
 	Testcase Testcase `json:"testcase"`
@@ -46,14 +54,10 @@ type Response struct {
 }
 
 type Contest struct {
-	ID                  int    `json:"id"`
-	Name                string `json:"name"`
-	Types               string `json:"type"`
-	Phase               string `json:"phase"`
-	Frozen              bool   `json:"frozen"`
-	DurationSeconds     int64  `json:"durationSeconds"`
-	StartTimeSeconds    int64  `json:"startTimeSeconds"`
-	RelativeTimeSeconds int64  `json:"relativeTimeSeconds"`
+	ID               int    `json:"id"`
+	Name             string `json:"name"`
+	DurationSeconds  int64  `json:"durationSeconds"`
+	StartTimeSeconds int64  `json:"startTimeSeconds"`
 }
 
 type Contests struct {
@@ -62,13 +66,9 @@ type Contests struct {
 }
 
 type Problem struct {
-	ContestID int      `json:"contestId"`
-	Index     string   `json:"index"`
-	Name      string   `json:"name"`
-	Type      string   `json:"type"`
-	Points    float32  `json:"points"`
-	Rating    int      `json:"rating"`
-	Tags      []string `json:"tags"`
+	ContestID int    `json:"contestId"`
+	Index     string `json:"index"`
+	Name      string `json:"name"`
 }
 
 type ProblemList struct {

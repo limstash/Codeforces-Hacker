@@ -53,13 +53,13 @@ func submitLogin(account Account, auth *Authentication, server string) (bool, er
 }
 
 func Login(config Config, auth *Authentication) {
-	if config.IsAutoLogin {
-		status, err := submitLogin(config.Account, auth, config.Server)
+	if config.Settings.IsAutoLogin {
+		status, err := submitLogin(config.Account, auth, config.Settings.Server)
 
 		if status == false {
 			log(1, err.Error())
 		}
 
-		token.GetCSRF(auth, config.Server)
+		token.GetCSRF(auth, config.Settings.Server)
 	}
 }
