@@ -8,11 +8,11 @@ import (
 
 func prepare() error {
 
-	data1 := "{\"contest\":1,\"problem\":\"A\",\"autoLogin\":true,\"autoHack\":false,\"testcase\":{\"inputFile\":\"./data/input\",\"outputFile\":\"./data/output\"},\"account\":{\"username\":\"user\",\"password\":\"pass\"}}"
+	data1 := "{\"target\":{\"contest\":1,\"index\":\"A\"},\"testcase\":{\"inputFile\":\"./data/input\",\"outputFile\":\"./data/output\"},\"account\":{\"username\":\"user\",\"password\":\"pass\"},\"settings\":{\"autoLogin\":true,\"autoHack\":false}}"
 
-	data2 := "{\"contest\":\"1\",\"problem\":\"A\",\"autoLogin\":true,\"autoHack\":false,\"testcase\":{\"inputFile\":\"./data/input\",\"outputFile\":\"./data/output\"},\"account\":{\"username\":\"user\",\"password\":\"pass\"}}"
+	data2 := "{\"target\":{\"contest\":\"1176\",\"index\":\"B\"},\"testcase\":{\"inputFile\":\"\",\"outputFile\":\"\"},\"account\":{\"username\":\"user\",\"password\":\"pass\"},\"settings\":{\"autoLogin\":true,\"autoHack\":true}}"
 
-	data3 := "{\"contest\":1,\"problem\":\"A\",\"autoLogin\":true,\"autoHack\":false,\"testcase\":{\"inputFile\":\"./data/input\",\"outputFile\":\"./data/output\"},\"account\":{\"username\":\"user\",\"password\":\"pass\"}q}"
+	data3 := "{\"target\":{\"contest\":1176,\"index\":\"B\"},\"testcase\":{\"inputFile\":\"\",\"outputFile\":\"\"},\"account\":{\"username\":\"user\",\"password\":\"pass\"},\"settings\":{\"autoLogin\":true,\"autoHack\":true,b}}"
 
 	err := ioutil.WriteFile("config-test-01.json", []byte(data1), 0644)
 

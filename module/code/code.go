@@ -59,7 +59,7 @@ func SaveCode(submission Submission, config Config) error {
 		"Python 3":  "py",
 	}
 
-	SubmissionPath := config.Path + "/src/" + strconv.Itoa(submission.SubmissionID)
+	SubmissionPath := config.Settings.Path + "/src/" + strconv.Itoa(submission.SubmissionID)
 
 	outputFile, err := os.OpenFile(SubmissionPath+"/main."+suffix[submission.Language], os.O_WRONLY|os.O_CREATE, 0666)
 

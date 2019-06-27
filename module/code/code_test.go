@@ -55,7 +55,7 @@ func Test_SaveCode(t *testing.T) {
 	}
 
 	config := Config{}
-	config.Path = getPath()
+	config.Settings.Path = getPath()
 
 	submission := Submission{}
 	submission.SubmissionID = 53319035

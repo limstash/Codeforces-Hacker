@@ -17,12 +17,12 @@ type Settings struct {
 	Server string
 
 	IsAutoLogin bool `json:"autoLogin"`
-	IsAutoHack  bool `json:"autohack"`
+	IsAutoHack  bool `json:"autoHack"`
 }
 
 type Target struct {
 	ContestID int    `json:"contest"`
-	ProblemID string `json:"problem"`
+	ProblemID string `json:"index"`
 }
 
 type Config struct {
