@@ -21,11 +21,11 @@ func Runcode(submission Submission, problem Problem) (bool, int, int) {
 
 	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
 		command = GetUnixRunCommand(submission)
-		args = GetUnixRunArgs(submission)
 	} else {
 		command = GetWindowsRunCommand(submission)
-		args = GetWindowsRunArgs(submission)
 	}
+
+	args = GetRunArgs(submission)
 
 	subProcess := exec.Command(command, args...)
 

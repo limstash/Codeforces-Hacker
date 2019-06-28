@@ -1,8 +1,6 @@
 package judge
 
 import (
-	"strconv"
-
 	. "github.com/hytzongxuan/Codeforces-Hacker/common"
 )
 
@@ -25,7 +23,7 @@ func GetCompileCommand(submission Submission) string {
 }
 
 func GetUnixCompileArgs(submission Submission) []string {
-	path := "./src/" + strconv.Itoa(submission.SubmissionID)
+	path := submission.Path
 	src := path + "/main"
 
 	switch submission.Language {
@@ -46,7 +44,7 @@ func GetUnixCompileArgs(submission Submission) []string {
 }
 
 func GetWindowsCompileArgs(submission Submission) []string {
-	path := "./src/" + strconv.Itoa(submission.SubmissionID)
+	path := submission.Path
 	src := path + "/main"
 	target := src + ".exe"
 
@@ -68,7 +66,7 @@ func GetWindowsCompileArgs(submission Submission) []string {
 }
 
 func GetUnixRunCommand(submission Submission) string {
-	path := "./src/" + strconv.Itoa(submission.SubmissionID)
+	path := submission.Path
 	target := path + "/main"
 
 	switch submission.Language {
@@ -86,14 +84,14 @@ func GetUnixRunCommand(submission Submission) string {
 	case "Python 2":
 		return "python2"
 	case "Python 3":
-		return "python 3"
+		return "python3"
 	default:
 		return ""
 	}
 }
 
-func GetUnixRunArgs(submission Submission) []string {
-	path := "./src/" + strconv.Itoa(submission.SubmissionID)
+func GetRunArgs(submission Submission) []string {
+	path := submission.Path
 	src := path + "/main"
 
 	switch submission.Language {
@@ -117,7 +115,7 @@ func GetUnixRunArgs(submission Submission) []string {
 }
 
 func GetWindowsRunCommand(submission Submission) string {
-	path := "./src/" + strconv.Itoa(submission.SubmissionID)
+	path := submission.Path
 	target := path + "/main.exe"
 
 	switch submission.Language {
@@ -135,32 +133,8 @@ func GetWindowsRunCommand(submission Submission) string {
 	case "Python 2":
 		return "python2"
 	case "Python 3":
-		return "python 3"
+		return "python3"
 	default:
 		return ""
-	}
-}
-
-func GetWindowsRunArgs(submission Submission) []string {
-	path := "./src/" + strconv.Itoa(submission.SubmissionID)
-	src := path + "/main"
-
-	switch submission.Language {
-	case "GNU C11":
-		return []string{}
-	case "GNU C++11":
-		return []string{}
-	case "GNU C++14":
-		return []string{}
-	case "GNU C++17":
-		return []string{}
-	case "Go":
-		return []string{}
-	case "Python 2":
-		return []string{src + ".py"}
-	case "Python 3":
-		return []string{src + ".py"}
-	default:
-		return []string{}
 	}
 }
