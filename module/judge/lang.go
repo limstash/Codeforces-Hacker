@@ -3,23 +3,14 @@ package judge
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"os/exec"
 	"regexp"
 	"strconv"
 )
 
-type Language struct {
-	GNUC11   bool
-	GNUCPP11 bool
-	GNUCPP14 bool
-	GNUCPP17 bool
-	Python2  bool
-	Python3  bool
-	Go       bool
-}
-
-func getGPlusPlusVersion() (string, error) {
-	res := exec.Command("g++", "--version")
+func getVersion(command string) (string, error) {
+	res := exec.Command(command, "--version")
 
 	var out bytes.Buffer
 	res.Stdout = &out
@@ -30,36 +21,50 @@ func getGPlusPlusVersion() (string, error) {
 		return "", errors.New("Not Available")
 	}
 
-	flysnowRegexp := regexp.MustCompile(`[\d+].[\d+].[\d+]`)
+	flysnowRegexp := regexp.MustCompile(`(\d+).(\d+).(\d+)`)
 	params := flysnowRegexp.FindStringSubmatch(out.String())
 
 	if params == nil {
-		return "", errors.New("Not Available")
+		return "", err
 	}
 
 	return params[0], nil
 }
 
-func getGCCVersion() (string, error) {
-	res := exec.Command("gcc", "--version")
+func splitVersion(ver string) (int, int, int) {
+	flysnowRegexp := regexp.MustCompile(`(\d+).(\d+).(\d+)`)
+	params := flysnowRegexp.FindStringSubmatch(ver)
 
-	var out bytes.Buffer
-	res.Stdout = &out
+	fmt.Println(ver)
+	fmt.Println(params)
 
-	err := res.Run()
+	first, _ := strconv.Atoi(params[1])
+	second, _ := strconv.Atoi(params[2])
+	third, _ := strconv.Atoi(params[3])
+
+	return first, second, third
+}
+
+func getGCCVersion() (int, int, int, error) {
+	res, err := getVersion("gcc")
 
 	if err != nil {
-		return "", errors.New("Not Available")
+		return 0, 0, 0, err
 	}
 
-	flysnowRegexp := regexp.MustCompile(`[\d+].[\d+].[\d+]`)
-	params := flysnowRegexp.FindStringSubmatch(out.String())
+	first, second, third := splitVersion(res)
+	return first, second, third, nil
+}
 
-	if params == nil {
-		return "", errors.New("Not Available")
+func getGPlusPlusVersion() (int, int, int, error) {
+	res, err := getVersion("g++")
+
+	if err != nil {
+		return 0, 0, 0, err
 	}
 
-	return params[0], nil
+	first, second, third := splitVersion(res)
+	return first, second, third, nil
 }
 
 func checkPython2() bool {
@@ -107,88 +112,18 @@ func checkGo() bool {
 	return true
 }
 
-func checkC11(ver string) bool {
-	flysnowRegexp := regexp.MustCompile(`([\d+]).([\d+]).([\d+])`)
-	params := flysnowRegexp.FindStringSubmatch(ver)
-
-	first, _ := strconv.Atoi(params[1])
-	second, _ := strconv.Atoi(params[2])
-	third, _ := strconv.Atoi(params[3])
-
-	if first >= 5 || (first == 4 && (second > 8 || (second == 8 && third >= 1))) {
-		return true
+func checkGCC(first int, second int, third int) int {
+	if first >= 7 {
+		return 3
 	}
-
-	return false
-}
-
-func checkCPP11(ver string) bool {
-	flysnowRegexp := regexp.MustCompile(`([\d+]).([\d+]).([\d+])`)
-	params := flysnowRegexp.FindStringSubmatch(ver)
-
-	first, _ := strconv.Atoi(params[1])
-	second, _ := strconv.Atoi(params[2])
-	third, _ := strconv.Atoi(params[3])
-
-	if first >= 5 || (first == 4 && (second > 8 || (second == 8 && third >= 1))) {
-		return true
-	}
-
-	return false
-}
-
-func checkCPP14(ver string) bool {
-	flysnowRegexp := regexp.MustCompile(`([\d+]).([\d+]).([\d+])`)
-	params := flysnowRegexp.FindStringSubmatch(ver)
-
-	first, _ := strconv.Atoi(params[1])
 
 	if first >= 5 {
-		return true
+		return 2
 	}
 
-	return false
-}
-
-func checkCPP17(ver string) bool {
-	flysnowRegexp := regexp.MustCompile(`([\d+]).([\d+]).([\d+])`)
-	params := flysnowRegexp.FindStringSubmatch(ver)
-
-	first, _ := strconv.Atoi(params[1])
-
-	if first >= 7 {
-		return true
+	if first >= 5 || (first == 4 && (second > 8 || (second == 8 && third >= 1))) {
+		return 1
 	}
 
-	return false
-}
-
-func GetAvailableLanguage() Language {
-	var support Language
-
-	ver, e := getGPlusPlusVersion()
-
-	if e != nil {
-		support.GNUCPP11 = false
-		support.GNUCPP14 = false
-		support.GNUCPP17 = false
-	} else {
-		support.GNUCPP11 = checkCPP11(ver)
-		support.GNUCPP14 = checkCPP14(ver)
-		support.GNUCPP17 = checkCPP17(ver)
-	}
-
-	ver, e = getGCCVersion()
-
-	if e != nil {
-		support.GNUC11 = false
-	} else {
-		support.GNUC11 = checkC11(ver)
-	}
-
-	support.Go = checkGo()
-	support.Python2 = checkPython2()
-	support.Python3 = checkPython3()
-
-	return support
+	return 0
 }
