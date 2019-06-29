@@ -184,6 +184,59 @@ func Test_GetUnixCompileArgs(t *testing.T) {
 	}
 }
 
+func Test_GetWindowsCompileArgs(t *testing.T) {
+	status := true
+
+	case01 := GetWindowsCompileArgs(SubmissionCPP11())
+	case02 := GetWindowsCompileArgs(SubmissionCPP14())
+	case03 := GetWindowsCompileArgs(SubmissionCPP17())
+	case04 := GetWindowsCompileArgs(SubmissionC11())
+	case05 := GetWindowsCompileArgs(SubmissionGo())
+	case06 := GetWindowsCompileArgs(SubmissionUnknown())
+
+	if len(case01) != 6 || case01[0] != "./src/56192359/main.cpp" || case01[2] != "./src/56192359/main" {
+		t.Error("Test Failed: (Case 01) GetWindowsCompileArgs return wrong compile args (GNU C++11) ")
+		t.Error(case01)
+		status = false
+	}
+
+	if len(case02) != 6 || case02[0] != "./src/56192351/main.cpp" || case02[2] != "./src/56192351/main" {
+		t.Error("Test Failed: (Case 02) GetWindowsCompileArgs return wrong compile args (GNU C++14) ")
+		t.Error(case02)
+		status = false
+	}
+
+	if len(case03) != 6 || case03[0] != "./src/56192374/main.cpp" || case03[2] != "./src/56192374/main" {
+		t.Error("Test Failed: (Case 03) GetWindowsCompileArgs return wrong compile args (GNU C++17) ")
+		t.Error(case03)
+		status = false
+	}
+
+	if len(case04) != 6 || case04[0] != "./src/56192830/main.c" || case04[2] != "./src/56192830/main" {
+		t.Error("Test Failed: (Case 04) GetWindowsCompileArgs return wrong compile args (GNU C11) ")
+		t.Error(case04)
+		status = false
+	}
+
+	if len(case05) != 3 || case05[1] != "./src/40507899/main" || case05[2] != "./src/40507899/main.go" {
+		t.Error("Test Failed: (Case 05) GetWindowsCompileArgs return wrong compile args (Go) ")
+		t.Error(case05)
+		status = false
+	}
+
+	if len(case06) != 0 {
+		t.Error("Test Failed: (Case 06) GetWindowsCompileArgs should return a empty string array (Unknown) ")
+		t.Error(case06)
+		status = false
+	}
+
+	if status == true {
+		t.Log("Package judge - GetWindowsCompileArgs test passed")
+	} else {
+		t.Log("Package judge - GetWindowsCompileArgs test failed")
+	}
+}
+
 func Test_GetUnixRunCommand(t *testing.T) {
 	status := true
 
