@@ -194,31 +194,31 @@ func Test_GetWindowsCompileArgs(t *testing.T) {
 	case05 := GetWindowsCompileArgs(SubmissionGo())
 	case06 := GetWindowsCompileArgs(SubmissionUnknown())
 
-	if len(case01) != 6 || case01[0] != "./src/56192359/main.cpp" || case01[2] != "./src/56192359/main" {
+	if len(case01) != 7 || case01[0] != "./src/56192359/main.cpp" || case01[2] != "./src/56192359/main.exe" {
 		t.Error("Test Failed: (Case 01) GetWindowsCompileArgs return wrong compile args (GNU C++11) ")
 		t.Error(case01)
 		status = false
 	}
 
-	if len(case02) != 6 || case02[0] != "./src/56192351/main.cpp" || case02[2] != "./src/56192351/main" {
+	if len(case02) != 7 || case02[0] != "./src/56192351/main.cpp" || case02[2] != "./src/56192351/main.exe" {
 		t.Error("Test Failed: (Case 02) GetWindowsCompileArgs return wrong compile args (GNU C++14) ")
 		t.Error(case02)
 		status = false
 	}
 
-	if len(case03) != 6 || case03[0] != "./src/56192374/main.cpp" || case03[2] != "./src/56192374/main" {
+	if len(case03) != 7 || case03[0] != "./src/56192374/main.cpp" || case03[2] != "./src/56192374/main.exe" {
 		t.Error("Test Failed: (Case 03) GetWindowsCompileArgs return wrong compile args (GNU C++17) ")
 		t.Error(case03)
 		status = false
 	}
 
-	if len(case04) != 6 || case04[0] != "./src/56192830/main.c" || case04[2] != "./src/56192830/main" {
+	if len(case04) != 7 || case04[0] != "./src/56192830/main.c" || case04[2] != "./src/56192830/main.exe" {
 		t.Error("Test Failed: (Case 04) GetWindowsCompileArgs return wrong compile args (GNU C11) ")
 		t.Error(case04)
 		status = false
 	}
 
-	if len(case05) != 3 || case05[1] != "./src/40507899/main" || case05[2] != "./src/40507899/main.go" {
+	if len(case05) != 3 || case05[1] != "./src/40507899/main.exe" || case05[2] != "./src/40507899/main.go" {
 		t.Error("Test Failed: (Case 05) GetWindowsCompileArgs return wrong compile args (Go) ")
 		t.Error(case05)
 		status = false

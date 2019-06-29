@@ -3,7 +3,6 @@ package judge
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"os/exec"
 	"regexp"
 	"strconv"
@@ -34,9 +33,6 @@ func getVersion(command string) (string, error) {
 func splitVersion(ver string) (int, int, int) {
 	flysnowRegexp := regexp.MustCompile(`(\d+).(\d+).(\d+)`)
 	params := flysnowRegexp.FindStringSubmatch(ver)
-
-	fmt.Println(ver)
-	fmt.Println(params)
 
 	first, _ := strconv.Atoi(params[1])
 	second, _ := strconv.Atoi(params[2])
