@@ -64,6 +64,8 @@ func Test_SaveCode(t *testing.T) {
 	submission.Code = code
 
 	submission.Language = "GNU C++11"
+	submission.Path = "./src/53319035"
+
 	e := SaveCode(submission, config)
 
 	if e != nil {

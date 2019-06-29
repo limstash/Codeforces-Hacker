@@ -65,7 +65,7 @@ func GetSubmission(contest Contest, problem Problem, auth *Authentication, serve
 		submitTime := submissionInfo.Get("creationTimeSeconds").MustInt64()
 
 		if verdict == "OK" && problemIndex == problem.Index && submitTime > contest.StartTimeSeconds && submitTime <= contest.StartTimeSeconds+contest.DurationSeconds {
-			submission = append(submission, Submission{SubmissionID: submissionID, Language: language, Code: ""})
+			submission = append(submission, Submission{SubmissionID: submissionID, Language: language, Code: "", Path: "./src/" + strconv.Itoa(submissionID)})
 		}
 	}
 
