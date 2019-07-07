@@ -2,13 +2,14 @@ package code
 
 import (
 	"bufio"
+	"errors"
 	"os"
 	"strconv"
 
 	"github.com/bitly/go-simplejson"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
+	"github.com/limstash/Codeforces-Hacker/module/conn"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func apiQueryCode(SubmissionID int, auth *Authentication, server string) (Response, error) {
@@ -48,7 +49,7 @@ func QueryCode(SubmissionID int, auth *Authentication, server string) (string, e
 	return source, nil
 }
 
-func SaveCode(submission Submission, config Config) error {
+func SaveCode(submission Submission) error {
 	suffix := map[string]string{
 		"GNU C11":   "c",
 		"GNU C++11": "cpp",
@@ -61,7 +62,19 @@ func SaveCode(submission Submission, config Config) error {
 
 	SubmissionPath := submission.Path
 
-	outputFile, err := os.OpenFile(SubmissionPath+"/main."+suffix[submission.Language], os.O_WRONLY|os.O_CREATE, 0666)
+	err := os.MkdirAll(SubmissionPath, 0777)
+
+	if err != nil {
+		return err
+	}
+
+	extensionSuffix := suffix[submission.Language]
+
+	if len(extensionSuffix) == 0 {
+		return errors.New("No such programming language")
+	}
+
+	outputFile, err := os.OpenFile(SubmissionPath+"/main."+extensionSuffix, os.O_WRONLY|os.O_CREATE, 0666)
 
 	if err != nil {
 		return err

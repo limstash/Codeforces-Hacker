@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
+	. "github.com/limstash/Codeforces-Hacker/common"
+	"github.com/limstash/Codeforces-Hacker/module/token"
 )
 
 func Test_QueryCode(t *testing.T) {
@@ -54,9 +54,6 @@ func Test_SaveCode(t *testing.T) {
 		t.Skip("Fetch CSRF failed, skipped")
 	}
 
-	config := Config{}
-	config.Settings.Path = getPath()
-
 	submission := Submission{}
 	submission.SubmissionID = 53319035
 
@@ -66,7 +63,7 @@ func Test_SaveCode(t *testing.T) {
 	submission.Language = "GNU C++11"
 	submission.Path = "./src/53319035"
 
-	e := SaveCode(submission, config)
+	e := SaveCode(submission)
 
 	if e != nil {
 		status = false
@@ -75,7 +72,7 @@ func Test_SaveCode(t *testing.T) {
 	}
 
 	submission.Language = "GNU C++11"
-	e = SaveCode(submission, config)
+	e = SaveCode(submission)
 
 	if e != nil {
 		status = false
@@ -84,7 +81,6 @@ func Test_SaveCode(t *testing.T) {
 	}
 
 	submission.Language = "GNU C++17"
-	e = SaveCode(submission, config)
 
 	if e != nil {
 		status = false
@@ -93,7 +89,7 @@ func Test_SaveCode(t *testing.T) {
 	}
 
 	submission.Language = "GNU C11"
-	e = SaveCode(submission, config)
+	e = SaveCode(submission)
 
 	if e != nil {
 		status = false
@@ -101,8 +97,8 @@ func Test_SaveCode(t *testing.T) {
 		t.Error(e)
 	}
 
-	submission.Language = "Python2"
-	e = SaveCode(submission, config)
+	submission.Language = "Python 2"
+	e = SaveCode(submission)
 
 	if e != nil {
 		status = false
@@ -110,8 +106,8 @@ func Test_SaveCode(t *testing.T) {
 		t.Error(e)
 	}
 
-	submission.Language = "Python3"
-	e = SaveCode(submission, config)
+	submission.Language = "Python 3"
+	e = SaveCode(submission)
 
 	if e != nil {
 		status = false
@@ -120,7 +116,7 @@ func Test_SaveCode(t *testing.T) {
 	}
 
 	submission.Language = "Go"
-	e = SaveCode(submission, config)
+	e = SaveCode(submission)
 
 	if e != nil {
 		status = false
