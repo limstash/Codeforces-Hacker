@@ -3,14 +3,14 @@ package judge
 import (
 	"errors"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"runtime"
-	"syscall"
 	"time"
 
 	"github.com/shirou/gopsutil/process"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func Compile(submission Submission) (bool, error) {
@@ -27,8 +27,6 @@ func Compile(submission Submission) (bool, error) {
 
 	cmd := exec.Command(command, args...)
 
-	cmd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
-
 	stderr, err := cmd.StderrPipe()
 	if err != nil {
 		return false, err
@@ -41,18 +39,19 @@ func Compile(submission Submission) (bool, error) {
 	startStamp := time.Now().UnixNano() / 1e6
 	compileStatus := true
 
-	go func(pid int32) {
+	go func(processHandle *os.Process) {
+		pid := int32(processHandle.Pid)
 		isRun, _ := process.PidExists(pid)
 
 		for isRun == true {
 			if int((time.Now().UnixNano()/1e6)-startStamp) >= 10000 {
-				syscall.Kill(-int(pid), syscall.SIGKILL)
+				processHandle.Kill()
 				compileStatus = false
 			}
 
 			isRun, _ = process.PidExists(pid)
 		}
-	}(int32(cmd.Process.Pid))
+	}(cmd.Process)
 
 	msg, _ := ioutil.ReadAll(stderr)
 

@@ -1,7 +1,7 @@
 package judge
 
 import (
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func GetCompileCommand(submission Submission) string {
@@ -37,7 +37,7 @@ func GetUnixCompileArgs(submission Submission) []string {
 	case "GNU C++17":
 		return []string{src + ".cpp", "-o", src, "-lm", "-std=c++17", "-DONLINE_JUDGE"}
 	case "Go":
-		return []string{"-o", src, src + ".go"}
+		return []string{"build", "-o", src, src + ".go"}
 	default:
 		return []string{}
 	}
@@ -59,7 +59,7 @@ func GetWindowsCompileArgs(submission Submission) []string {
 	case "GNU C++17":
 		return []string{src + ".cpp", "-o", target, "-lm", "-std=c++17", "-DONLINE_JUDGE", "-Wl,--stack=536870912"}
 	case "Go":
-		return []string{"-o", target, src + ".go"}
+		return []string{"build", "-o", target, src + ".go"}
 	default:
 		return []string{}
 	}

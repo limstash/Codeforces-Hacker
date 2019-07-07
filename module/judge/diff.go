@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func min(a int, b int) int {

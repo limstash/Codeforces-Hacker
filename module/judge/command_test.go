@@ -3,14 +3,14 @@ package judge
 import (
 	"testing"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func SubmissionCPP11() Submission {
 	submission := Submission{}
 	submission.Language = "GNU C++11"
-	submission.Path = "./src/56192359"
-	submission.SubmissionID = 56192359
+	submission.Path = "./src/55734511"
+	submission.SubmissionID = 55734511
 
 	return submission
 }
@@ -18,8 +18,8 @@ func SubmissionCPP11() Submission {
 func SubmissionCPP14() Submission {
 	submission := Submission{}
 	submission.Language = "GNU C++14"
-	submission.Path = "./src/56192351"
-	submission.SubmissionID = 56192351
+	submission.Path = "./src/55717471"
+	submission.SubmissionID = 55717471
 
 	return submission
 }
@@ -27,8 +27,8 @@ func SubmissionCPP14() Submission {
 func SubmissionCPP17() Submission {
 	submission := Submission{}
 	submission.Language = "GNU C++17"
-	submission.Path = "./src/56192374"
-	submission.SubmissionID = 56192374
+	submission.Path = "./src/55690582"
+	submission.SubmissionID = 55690582
 
 	return submission
 }
@@ -36,8 +36,8 @@ func SubmissionCPP17() Submission {
 func SubmissionC11() Submission {
 	submission := Submission{}
 	submission.Language = "GNU C11"
-	submission.Path = "./src/56192830"
-	submission.SubmissionID = 56192830
+	submission.Path = "./src/28694609"
+	submission.SubmissionID = 28694609
 
 	return submission
 }
@@ -54,8 +54,8 @@ func SubmissionPython2() Submission {
 func SubmissionPython3() Submission {
 	submission := Submission{}
 	submission.Language = "Python 3"
-	submission.Path = "./src/56192367"
-	submission.SubmissionID = 56192367
+	submission.Path = "./src/37889768"
+	submission.SubmissionID = 37889768
 
 	return submission
 }
@@ -63,8 +63,8 @@ func SubmissionPython3() Submission {
 func SubmissionGo() Submission {
 	submission := Submission{}
 	submission.Language = "Go"
-	submission.Path = "./src/40507899"
-	submission.SubmissionID = 40507899
+	submission.Path = "./src/26322106"
+	submission.SubmissionID = 26322106
 
 	return submission
 }
@@ -141,31 +141,31 @@ func Test_GetUnixCompileArgs(t *testing.T) {
 	case05 := GetUnixCompileArgs(SubmissionGo())
 	case06 := GetUnixCompileArgs(SubmissionUnknown())
 
-	if len(case01) != 6 || case01[0] != "./src/56192359/main.cpp" || case01[2] != "./src/56192359/main" {
+	if len(case01) != 6 || case01[0] != "./src/55734511/main.cpp" || case01[2] != "./src/55734511/main" {
 		t.Error("Test Failed: (Case 01) GetUnixCompileArgs return wrong compile args (GNU C++11) ")
 		t.Error(case01)
 		status = false
 	}
 
-	if len(case02) != 6 || case02[0] != "./src/56192351/main.cpp" || case02[2] != "./src/56192351/main" {
+	if len(case02) != 6 || case02[0] != "./src/55717471/main.cpp" || case02[2] != "./src/55717471/main" {
 		t.Error("Test Failed: (Case 02) GetUnixCompileArgs return wrong compile args (GNU C++14) ")
 		t.Error(case02)
 		status = false
 	}
 
-	if len(case03) != 6 || case03[0] != "./src/56192374/main.cpp" || case03[2] != "./src/56192374/main" {
+	if len(case03) != 6 || case03[0] != "./src/55690582/main.cpp" || case03[2] != "./src/55690582/main" {
 		t.Error("Test Failed: (Case 03) GetUnixCompileArgs return wrong compile args (GNU C++17) ")
 		t.Error(case03)
 		status = false
 	}
 
-	if len(case04) != 6 || case04[0] != "./src/56192830/main.c" || case04[2] != "./src/56192830/main" {
+	if len(case04) != 6 || case04[0] != "./src/28694609/main.c" || case04[2] != "./src/28694609/main" {
 		t.Error("Test Failed: (Case 04) GetUnixCompileArgs return wrong compile args (GNU C11) ")
 		t.Error(case04)
 		status = false
 	}
 
-	if len(case05) != 3 || case05[1] != "./src/40507899/main" || case05[2] != "./src/40507899/main.go" {
+	if len(case05) != 4 || case05[2] != "./src/26322106/main" || case05[3] != "./src/26322106/main.go" {
 		t.Error("Test Failed: (Case 05) GetUnixCompileArgs return wrong compile args (Go) ")
 		t.Error(case05)
 		status = false
@@ -194,31 +194,31 @@ func Test_GetWindowsCompileArgs(t *testing.T) {
 	case05 := GetWindowsCompileArgs(SubmissionGo())
 	case06 := GetWindowsCompileArgs(SubmissionUnknown())
 
-	if len(case01) != 7 || case01[0] != "./src/56192359/main.cpp" || case01[2] != "./src/56192359/main.exe" {
+	if len(case01) != 7 || case01[0] != "./src/55734511/main.cpp" || case01[2] != "./src/55734511/main.exe" {
 		t.Error("Test Failed: (Case 01) GetWindowsCompileArgs return wrong compile args (GNU C++11) ")
 		t.Error(case01)
 		status = false
 	}
 
-	if len(case02) != 7 || case02[0] != "./src/56192351/main.cpp" || case02[2] != "./src/56192351/main.exe" {
+	if len(case02) != 7 || case02[0] != "./src/55717471/main.cpp" || case02[2] != "./src/55717471/main.exe" {
 		t.Error("Test Failed: (Case 02) GetWindowsCompileArgs return wrong compile args (GNU C++14) ")
 		t.Error(case02)
 		status = false
 	}
 
-	if len(case03) != 7 || case03[0] != "./src/56192374/main.cpp" || case03[2] != "./src/56192374/main.exe" {
+	if len(case03) != 7 || case03[0] != "./src/55690582/main.cpp" || case03[2] != "./src/55690582/main.exe" {
 		t.Error("Test Failed: (Case 03) GetWindowsCompileArgs return wrong compile args (GNU C++17) ")
 		t.Error(case03)
 		status = false
 	}
 
-	if len(case04) != 7 || case04[0] != "./src/56192830/main.c" || case04[2] != "./src/56192830/main.exe" {
+	if len(case04) != 7 || case04[0] != "./src/28694609/main.c" || case04[2] != "./src/28694609/main.exe" {
 		t.Error("Test Failed: (Case 04) GetWindowsCompileArgs return wrong compile args (GNU C11) ")
 		t.Error(case04)
 		status = false
 	}
 
-	if len(case05) != 3 || case05[1] != "./src/40507899/main.exe" || case05[2] != "./src/40507899/main.go" {
+	if len(case05) != 4 || case05[2] != "./src/26322106/main.exe" || case05[3] != "./src/26322106/main.go" {
 		t.Error("Test Failed: (Case 05) GetWindowsCompileArgs return wrong compile args (Go) ")
 		t.Error(case05)
 		status = false
@@ -249,25 +249,25 @@ func Test_GetUnixRunCommand(t *testing.T) {
 	case07 := GetUnixRunCommand(SubmissionGo())
 	case08 := GetUnixRunCommand(SubmissionUnknown())
 
-	if case01 != "./src/56192359/main" {
+	if case01 != "./src/55734511/main" {
 		t.Error("Test Failed: (Case 01) GetUnixRunCommand return wrong run command (GNU C++11) ")
 		t.Error(case01)
 		status = false
 	}
 
-	if case02 != "./src/56192351/main" {
+	if case02 != "./src/55717471/main" {
 		t.Error("Test Failed: (Case 02) GetUnixRunCommand return wrong run command (GNU C++14) ")
 		t.Error(case02)
 		status = false
 	}
 
-	if case03 != "./src/56192374/main" {
+	if case03 != "./src/55690582/main" {
 		t.Error("Test Failed: (Case 03) GetUnixRunCommand return wrong run command (GNU C++17) ")
 		t.Error(case03)
 		status = false
 	}
 
-	if case04 != "./src/56192830/main" {
+	if case04 != "./src/28694609/main" {
 		t.Error("Test Failed: (Case 04) GetUnixRunCommand return wrong run command (GNU C11) ")
 		t.Error(case04)
 		status = false
@@ -285,7 +285,7 @@ func Test_GetUnixRunCommand(t *testing.T) {
 		status = false
 	}
 
-	if case07 != "./src/40507899/main" {
+	if case07 != "./src/26322106/main" {
 		t.Error("Test Failed: (Case 07) GetUnixRunCommand return wrong run command (Go) ")
 		t.Error(case07)
 		status = false
@@ -316,25 +316,25 @@ func Test_GetWindowsRunCommand(t *testing.T) {
 	case07 := GetWindowsRunCommand(SubmissionGo())
 	case08 := GetWindowsRunCommand(SubmissionUnknown())
 
-	if len(case01) == 0 || case01 != "./src/56192359/main.exe" {
+	if len(case01) == 0 || case01 != "./src/55734511/main.exe" {
 		t.Error("Test Failed: (Case 01) GetWindowsRunCommand return wrong run command (GNU C++11) ")
 		t.Error(case01)
 		status = false
 	}
 
-	if len(case02) == 0 || case02 != "./src/56192351/main.exe" {
+	if len(case02) == 0 || case02 != "./src/55717471/main.exe" {
 		t.Error("Test Failed: (Case 02) GetWindowsRunCommand return wrong run command (GNU C++14) ")
 		t.Error(case02)
 		status = false
 	}
 
-	if len(case03) == 0 || case03 != "./src/56192374/main.exe" {
+	if len(case03) == 0 || case03 != "./src/55690582/main.exe" {
 		t.Error("Test Failed: (Case 03) GetWindowsRunCommand return wrong run command (GNU C++17) ")
 		t.Error(case03)
 		status = false
 	}
 
-	if len(case04) == 0 || case04 != "./src/56192830/main.exe" {
+	if len(case04) == 0 || case04 != "./src/28694609/main.exe" {
 		t.Error("Test Failed: (Case 04) GetWindowsRunCommand return wrong run command (GNU C11) ")
 		t.Error(case04)
 		status = false
@@ -352,7 +352,7 @@ func Test_GetWindowsRunCommand(t *testing.T) {
 		status = false
 	}
 
-	if len(case07) == 0 || case07 != "./src/40507899/main.exe" {
+	if len(case07) == 0 || case07 != "./src/26322106/main.exe" {
 		t.Error("Test Failed: (Case 07) GetWindowsRunCommand return wrong run command (Go) ")
 		t.Error(case07)
 		status = false
@@ -413,7 +413,7 @@ func Test_GetRunArgs(t *testing.T) {
 		status = false
 	}
 
-	if len(case06) == 0 || case06[0] != "./src/56192367/main.py" {
+	if len(case06) == 0 || case06[0] != "./src/37889768/main.py" {
 		t.Error("Test Failed: (Case 06) GetRunArgs return wrong run args (Python3) ")
 		t.Error(case06)
 		status = false

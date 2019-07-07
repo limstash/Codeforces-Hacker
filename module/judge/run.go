@@ -6,12 +6,11 @@ import (
 	"os"
 	"os/exec"
 	"runtime"
-	"syscall"
 	"time"
 
 	"github.com/shirou/gopsutil/process"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func Runcode(submission Submission, problem Problem) (bool, int, int) {
@@ -81,7 +80,9 @@ func Runcode(submission Submission, problem Problem) (bool, int, int) {
 
 	timelimitInt := problem.Timelimit
 
-	go func(pid int32) {
+	go func(processHandle *os.Process) {
+		pid := int32(processHandle.Pid)
+
 		isRun, _ := process.PidExists(pid)
 		processhandle, _ := process.NewProcess(pid)
 
@@ -93,16 +94,16 @@ func Runcode(submission Submission, problem Problem) (bool, int, int) {
 			}
 
 			if int(usedmemory) > memorylimitInt {
-				syscall.Kill(int(pid), syscall.SIGKILL)
+				processHandle.Kill()
 			}
 
 			if int((time.Now().UnixNano()/1e6)-startStamp) >= timelimitInt+10 {
-				syscall.Kill(int(pid), syscall.SIGKILL)
+				processHandle.Kill()
 			}
 
 			isRun, _ = process.PidExists(pid)
 		}
-	}(int32(subProcess.Process.Pid))
+	}(subProcess.Process)
 
 	err = subProcess.Wait()
 	endStamp := time.Now().UnixNano() / 1e6
