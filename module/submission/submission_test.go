@@ -3,8 +3,8 @@ package submission
 import (
 	"testing"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
+	. "github.com/limstash/Codeforces-Hacker/common"
+	"github.com/limstash/Codeforces-Hacker/module/token"
 )
 
 func Test_GetSubmission(t *testing.T) {

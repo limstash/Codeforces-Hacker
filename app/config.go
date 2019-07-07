@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func readConfig(configFilePath string) ([]byte, error) {

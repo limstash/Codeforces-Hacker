@@ -4,12 +4,12 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/hytzongxuan/Codeforces-Hacker/app"
+	"github.com/limstash/Codeforces-Hacker/app"
 )
 
 func version() {
 	fmt.Println("===========================================")
-	fmt.Println("== Codeforces Hacker v0.3 by hytzongxuan ==")
+	fmt.Println("== Codeforces Hacker v0.3 by limstash ==")
 	fmt.Println("===========================================")
 }
 

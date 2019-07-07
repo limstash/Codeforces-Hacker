@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 // FindContest will find the latest contest in the contests array

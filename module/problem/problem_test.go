@@ -3,7 +3,7 @@ package problem
 import (
 	"testing"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func Test_GetContest(t *testing.T) {

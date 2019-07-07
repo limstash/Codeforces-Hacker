@@ -4,10 +4,10 @@ import (
 	"errors"
 	"regexp"
 
-	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
+	"github.com/limstash/Codeforces-Hacker/module/conn"
+	"github.com/limstash/Codeforces-Hacker/module/token"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func apiSubmitLogin(account Account, auth *Authentication, server string) (Response, error) {

@@ -3,8 +3,8 @@ package app
 import (
 	"testing"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
+	. "github.com/limstash/Codeforces-Hacker/common"
+	"github.com/limstash/Codeforces-Hacker/module/token"
 )
 
 func testLogin01(t *testing.T, server string) bool {

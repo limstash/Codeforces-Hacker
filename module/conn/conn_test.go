@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/bitly/go-simplejson"
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 var authentication Authentication

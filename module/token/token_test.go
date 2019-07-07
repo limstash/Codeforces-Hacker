@@ -3,7 +3,7 @@ package token
 import (
 	"testing"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func Test_GetCSRF(t *testing.T) {

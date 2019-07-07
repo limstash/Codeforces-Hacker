@@ -5,9 +5,9 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/problem"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/token"
+	. "github.com/limstash/Codeforces-Hacker/common"
+	"github.com/limstash/Codeforces-Hacker/module/problem"
+	"github.com/limstash/Codeforces-Hacker/module/token"
 )
 
 var auth = Authentication{}

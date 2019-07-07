@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/bitly/go-simplejson"
-	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
+	"github.com/limstash/Codeforces-Hacker/module/conn"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func apiQuerySubmission(contestID int, auth *Authentication, server string) (Response, error) {

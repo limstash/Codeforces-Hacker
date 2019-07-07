@@ -4,10 +4,10 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/hytzongxuan/Codeforces-Hacker/module/conn"
+	"github.com/limstash/Codeforces-Hacker/module/conn"
 	"github.com/opesun/goquery"
 
-	. "github.com/hytzongxuan/Codeforces-Hacker/common"
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 // GetCSRF will fetch CSRF token from codeforces's login page
