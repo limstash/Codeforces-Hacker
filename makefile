@@ -24,6 +24,11 @@ run:
 deps:
 	$(GOGET) github.com/opesun/goquery
 	$(GOGET) github.com/bitly/go-simplejson
+	$(GOGET) github.com/StackExchange/wmi
+    $(GOGET) github.com/shirou/w32
+	$(GOGET) github.com/termie/go-shutil
+    $(GOGET) github.com/go-ole/go-ole
+    $(GOGET) github.com/go-ole/go-ole/oleutil
 
 build-linux64:
 	mkdir -p build/linux_64

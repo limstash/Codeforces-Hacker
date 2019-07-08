@@ -37,7 +37,7 @@ func FindContest(contests []Contest, id int) (Contest, error) {
 
 	timeDelta := currentTime - contest.StartTimeSeconds
 
-	if timeDelta <= 12*3600 {
+	if timeDelta >= 12*3600 {
 		return contest, errors.New("Contest finished")
 	}
 
