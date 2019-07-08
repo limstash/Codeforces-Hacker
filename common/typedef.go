@@ -88,3 +88,13 @@ type Submission struct {
 	Code         string
 	Path         string
 }
+
+type Language struct {
+	GNUC11   bool
+	GNUCPP11 bool
+	GNUCPP14 bool
+	GNUCPP17 bool
+	Python2  bool
+	Python3  bool
+	Go       bool
+}
