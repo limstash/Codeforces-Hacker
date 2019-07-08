@@ -30,7 +30,7 @@ func fetchCSRF(auth *Authentication, server string) {
 		log(1, err.Error())
 	}
 
-	log(3, "Fetch CSRF token success")
+	log(3, "Fetch csrf token success")
 }
 
 func login(config Config, auth *Authentication) {
@@ -93,5 +93,5 @@ func Load(configFilePath string, remoteServerURL string) {
 	contest := checkContest(config, &auth)
 	problem := checkProblem(config, contest, &auth)
 
-	run(contest, problem, config, &auth)
+	run(contest, problem, config, &auth, remoteServerURL)
 }

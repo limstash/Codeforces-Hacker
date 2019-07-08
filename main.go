@@ -8,9 +8,9 @@ import (
 )
 
 func version() {
-	fmt.Println("===========================================")
-	fmt.Println("== Codeforces Hacker v0.3 by limstash ==")
-	fmt.Println("===========================================")
+	fmt.Println("==========================================")
+	fmt.Println("==  Codeforces Hacker v0.3 by limstash  ==")
+	fmt.Println("==========================================")
 }
 
 var configFilePath string
