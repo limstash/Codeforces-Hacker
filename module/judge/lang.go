@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
+
+	. "github.com/limstash/Codeforces-Hacker/common"
 )
 
 func getVersion(command string) (string, error) {
@@ -122,4 +124,34 @@ func checkGCC(first int, second int, third int) int {
 	}
 
 	return 0
+}
+
+func GetSupport() Language {
+	var support Language
+
+	a, b, c, e := getGPlusPlusVersion()
+
+	if e != nil {
+		support.GNUCPP11 = false
+		support.GNUCPP14 = false
+		support.GNUCPP17 = false
+	} else {
+		support.GNUCPP11 = checkGCC(a, b, c) >= 1
+		support.GNUCPP14 = checkGCC(a, b, c) >= 2
+		support.GNUCPP17 = checkGCC(a, b, c) >= 3
+	}
+
+	a, b, c, e = getGCCVersion()
+
+	if e != nil {
+		support.GNUC11 = false
+	} else {
+		support.GNUC11 = checkGCC(a, b, c) >= 1
+	}
+
+	support.Go = checkGo()
+	support.Python2 = checkPython2()
+	support.Python3 = checkPython3()
+
+	return support
 }
