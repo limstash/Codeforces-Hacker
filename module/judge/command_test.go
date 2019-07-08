@@ -9,8 +9,8 @@ import (
 func SubmissionCPP11() Submission {
 	submission := Submission{}
 	submission.Language = "GNU C++11"
-	submission.Path = "./src/51932292"
-	submission.SubmissionID = 51932292
+	submission.Path = "./src/47742367"
+	submission.SubmissionID = 47742367
 
 	return submission
 }
@@ -141,7 +141,7 @@ func Test_GetUnixCompileArgs(t *testing.T) {
 	case05 := GetUnixCompileArgs(SubmissionGo())
 	case06 := GetUnixCompileArgs(SubmissionUnknown())
 
-	if len(case01) != 6 || case01[0] != "./src/51932292/main.cpp" || case01[2] != "./src/51932292/main" {
+	if len(case01) != 6 || case01[0] != "./src/47742367/main.cpp" || case01[2] != "./src/47742367/main" {
 		t.Error("Test Failed: (Case 01) GetUnixCompileArgs return wrong compile args (GNU C++11) ")
 		t.Error(case01)
 		status = false
@@ -194,7 +194,7 @@ func Test_GetWindowsCompileArgs(t *testing.T) {
 	case05 := GetWindowsCompileArgs(SubmissionGo())
 	case06 := GetWindowsCompileArgs(SubmissionUnknown())
 
-	if len(case01) != 7 || case01[0] != "./src/51932292/main.cpp" || case01[2] != "./src/51932292/main.exe" {
+	if len(case01) != 7 || case01[0] != "./src/47742367/main.cpp" || case01[2] != "./src/47742367/main.exe" {
 		t.Error("Test Failed: (Case 01) GetWindowsCompileArgs return wrong compile args (GNU C++11) ")
 		t.Error(case01)
 		status = false
@@ -249,7 +249,7 @@ func Test_GetUnixRunCommand(t *testing.T) {
 	case07 := GetUnixRunCommand(SubmissionGo())
 	case08 := GetUnixRunCommand(SubmissionUnknown())
 
-	if case01 != "./src/51932292/main" {
+	if case01 != "./src/47742367/main" {
 		t.Error("Test Failed: (Case 01) GetUnixRunCommand return wrong run command (GNU C++11) ")
 		t.Error(case01)
 		status = false
@@ -316,7 +316,7 @@ func Test_GetWindowsRunCommand(t *testing.T) {
 	case07 := GetWindowsRunCommand(SubmissionGo())
 	case08 := GetWindowsRunCommand(SubmissionUnknown())
 
-	if len(case01) == 0 || case01 != "./src/51932292/main.exe" {
+	if len(case01) == 0 || case01 != "./src/47742367/main.exe" {
 		t.Error("Test Failed: (Case 01) GetWindowsRunCommand return wrong run command (GNU C++11) ")
 		t.Error(case01)
 		status = false
