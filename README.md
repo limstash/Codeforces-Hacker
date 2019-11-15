@@ -21,7 +21,7 @@ You need to set up ``config.json``
 
 Here is an example
 
-```json
+```cpp
 {
     "target" : {
         "contest" : 1176, // The contest ID you want to hack
