@@ -8,3 +8,39 @@
 [4]: https://codecov.io/gh/limstash/Codeforces-Hacker "Codecov Status"
 
 Help you automatically hack in Educational Round and Div 3
+
+## Build
+
+You could download pre-compile executable files directly at [here](https://github.com/limstash/Codeforces-Hacker/releases)
+
+You could also download source files and use ``make`` to compile
+
+## Run
+
+You need to set up ``config.json``
+
+Here is an example
+
+```json
+{
+    "target" : {
+        "contest" : 1176, // The contest ID you want to hack
+        "index" : "B" // The problem index you want to hack
+    },
+
+    "testcase" : {
+        "inputFile" : "./data.in", // Input testcase filepath
+        "outputFile" : "./data.ans" // Output testcase filepath
+    },
+
+    "account" : {
+        "username" : "user", // Your Codeforces account username (Optional)
+        "password" : "pass" // Your Codeforces account Password (Optional)
+    },
+
+    "settings": {
+        "autoLogin" : true, // Login your account automatically (need to fill in the account info)
+        "autoHack" : true, // Hacked automatically (need check on autoLogin)
+    }
+}
+```
