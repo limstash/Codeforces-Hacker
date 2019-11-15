@@ -27,8 +27,8 @@ func SubmissionCPP14() Submission {
 func SubmissionCPP17() Submission {
 	submission := Submission{}
 	submission.Language = "GNU C++17"
-	submission.Path = "./src/50123754"
-	submission.SubmissionID = 50123754
+	submission.Path = "./src/64750919"
+	submission.SubmissionID = 64750919
 
 	return submission
 }
