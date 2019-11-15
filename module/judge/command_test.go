@@ -153,7 +153,7 @@ func Test_GetUnixCompileArgs(t *testing.T) {
 		status = false
 	}
 
-	if len(case03) != 6 || case03[0] != "./src/50123754/main.cpp" || case03[2] != "./src/50123754/main" {
+	if len(case03) != 6 || case03[0] != "./src/64750919/main.cpp" || case03[2] != "./src/64750919/main" {
 		t.Error("Test Failed: (Case 03) GetUnixCompileArgs return wrong compile args (GNU C++17) ")
 		t.Error(case03)
 		status = false
@@ -206,7 +206,7 @@ func Test_GetWindowsCompileArgs(t *testing.T) {
 		status = false
 	}
 
-	if len(case03) != 7 || case03[0] != "./src/50123754/main.cpp" || case03[2] != "./src/50123754/main.exe" {
+	if len(case03) != 7 || case03[0] != "./src/64750919/main.cpp" || case03[2] != "./src/64750919/main.exe" {
 		t.Error("Test Failed: (Case 03) GetWindowsCompileArgs return wrong compile args (GNU C++17) ")
 		t.Error(case03)
 		status = false
@@ -261,7 +261,7 @@ func Test_GetUnixRunCommand(t *testing.T) {
 		status = false
 	}
 
-	if case03 != "./src/50123754/main" {
+	if case03 != "./src/64750919/main" {
 		t.Error("Test Failed: (Case 03) GetUnixRunCommand return wrong run command (GNU C++17) ")
 		t.Error(case03)
 		status = false
@@ -328,7 +328,7 @@ func Test_GetWindowsRunCommand(t *testing.T) {
 		status = false
 	}
 
-	if len(case03) == 0 || case03 != "./src/50123754/main.exe" {
+	if len(case03) == 0 || case03 != "./src/64750919/main.exe" {
 		t.Error("Test Failed: (Case 03) GetWindowsRunCommand return wrong run command (GNU C++17) ")
 		t.Error(case03)
 		status = false
