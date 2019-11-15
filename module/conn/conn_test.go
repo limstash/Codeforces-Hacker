@@ -12,7 +12,7 @@ var authentication Authentication
 func testPOST01(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://api.yellowfish.top/Codeforces-Hacker/post-test.php"
+	request.URL = "https://api.limstash.com/Codeforces-Hacker/post-test.php"
 	request.Method = "POST"
 	request.NotRedirect = false
 	request.Authentication = &authentication
@@ -51,7 +51,7 @@ func testPOST01(t *testing.T) bool {
 func testPOST02(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://api.yellowfish.top/Codeforces-Hacker/not-found.php"
+	request.URL = "https://api.limstash.com/Codeforces-Hacker/not-found.php"
 	request.Method = "POST"
 	request.NotRedirect = false
 	request.Authentication = &authentication
@@ -69,7 +69,7 @@ func testPOST02(t *testing.T) bool {
 func testPOST03(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://api.yellowfish.top/Codeforces-Hacker/"
+	request.URL = "https://api.limstash.com/Codeforces-Hacker/"
 	request.Method = "POST"
 	request.NotRedirect = false
 	request.Authentication = &authentication
@@ -87,7 +87,7 @@ func testPOST03(t *testing.T) bool {
 func testPOST04(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://api.yellowfish.top/Codeforces-Hacker/cookie-test.php"
+	request.URL = "https://api.limstash.com/Codeforces-Hacker/cookie-test.php"
 	request.Method = "POST"
 	request.NotRedirect = false
 	request.Authentication = &authentication
@@ -127,7 +127,7 @@ func testPOST04(t *testing.T) bool {
 func testGet05(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://api.yellowfish.top/Codeforces-Hacker/header-test.php"
+	request.URL = "https://api.limstash.com/Codeforces-Hacker/header-test.php"
 	request.Method = "GET"
 	request.NotRedirect = false
 	request.Authentication = &authentication
@@ -165,7 +165,7 @@ func testGet05(t *testing.T) bool {
 func testGet06(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://api.yellowfish.top"
+	request.URL = "https://api.limstash.com/"
 	request.Method = "GET"
 	request.NotRedirect = true
 	request.Authentication = &authentication
@@ -223,7 +223,7 @@ func Test_httpRequest(t *testing.T) {
 func testQuery01(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://www.baidu.com"
+	request.URL = "https://www.bing.com"
 	request.Method = "GET"
 	request.NotRedirect = false
 	request.Authentication = &authentication
@@ -241,7 +241,7 @@ func testQuery01(t *testing.T) bool {
 func testQuery02(t *testing.T) bool {
 	request := Request{}
 
-	request.URL = "https://www.baidu.as-i/ppp"
+	request.URL = "https://www.bing.coa/ppp"
 	request.Method = "POST"
 	request.NotRedirect = false
 	request.Authentication = &authentication
